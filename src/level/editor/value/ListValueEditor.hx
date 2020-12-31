@@ -1,5 +1,6 @@
 package level.editor.value;
 
+import electron.main.Dialog;
 import project.data.value.ListValueTemplate.ListValueElem;
 import util.Fields;
 import level.data.Value;
@@ -34,10 +35,11 @@ class ListValueEditor extends ValueEditor
 
 		// create element
 		element = new JQuery('<div>');
+		var i: Int = 0;
 		for (elem in values)
 		{
-			var value: ListValueElem = cast elem;
-			createListElemPanel(value.content, value.type).appendTo(element);
+			var value: ListValueElem = cast elem.value;
+			var panel = createListElemPanel(value.content, value.type, i, values).appendTo(element);
 		}
 
 		// element = new JQuery('<select>');
@@ -68,11 +70,28 @@ class ListValueEditor extends ValueEditor
 		// });
 	}
 
-	function createListElemPanel(val: String, type: String): JQuery
+	function createListElemPanel(val: String, type: String, index: Int, values:Array<Value>): JQuery
 	{
 		var panel = new JQuery('<div>');
-		Fields.createField('val-list', val, panel);
-		Fields.createField('val-type', type, panel);
+		var listPanel = Fields.createField('val-list', val, panel);
+		var typePanel = Fields.createField('val-type', type, panel);
+
+		listPanel.change(function (e) {
+			var v: ListValueElem = cast values[index];
+			v.content = listPanel.val();
+			listPanel.val(v.content);
+			EDITOR.level.store("111");
+			EDITOR.dirty();
+		});
+
+		typePanel.change(function(e) {
+			var v: ListValueElem = cast values[index];
+			v.type = typePanel.val();
+			typePanel.val(v.type);
+			EDITOR.level.store("222");
+			EDITOR.dirty();
+		});
+
 		return panel;
 	}
 

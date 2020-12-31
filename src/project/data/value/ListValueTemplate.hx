@@ -1,5 +1,6 @@
 package project.data.value;
 
+import js.node.console.Console;
 import io.Imports;
 import project.editor.value.ListValueTemplateEditor;
 import level.editor.value.ListValueEditor;
@@ -17,21 +18,24 @@ class ListValueTemplate extends ValueTemplate
 	}
 
 	public var values:Array<ListValueElem> = [];
-	public var defaults:ListValueElem = { content: "1", type: "int" };
+	public var defaults:Array<ListValueElem> = [{ content: "1", type: "int" }];
 
 	override function getHashCode():String
 	{
 		return name + ":ls:" + values.join(":");
 	}
 
-	override function getDefault():String
+	override function getDefault():Array<ListValueElem>
 	{
-		return "";
+		return defaults;
 	}
 
-	override function validate(val:Dynamic):String
+	override function validate(val:Dynamic):Array<ListValueElem>
 	{
-		val = val.string();
+		var val_cast: Array<ListValueElem> = cast val;
+		if (val_cast.length == 0) {
+			val_cast = defaults;
+		}
 		return val;
 	}
 
@@ -54,6 +58,9 @@ class ListValueTemplate extends ValueTemplate
 		var data:Dynamic = super.save();
 		data.values = values;
 		data.defaults = defaults;
+
+		js.html.Console.log(data);
+
 		return data;
 	}
 }
