@@ -18,7 +18,7 @@ class ListValueTemplate extends ValueTemplate
 	}
 
 	public var values:Array<ListValueElem> = [];
-	public var defaults:Array<ListValueElem> = [{ content: "1", type: "int" }];
+	public var defaults:Array<ListValueElem> = [{ content: "1", type: "int" }, { content: "2", type: "float" }];
 
 	override function getHashCode():String
 	{
@@ -58,9 +58,6 @@ class ListValueTemplate extends ValueTemplate
 		var data:Dynamic = super.save();
 		data.values = values;
 		data.defaults = defaults;
-
-		js.html.Console.log(data);
-
 		return data;
 	}
 }

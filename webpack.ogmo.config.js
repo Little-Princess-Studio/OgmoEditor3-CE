@@ -40,7 +40,8 @@ module.exports = (env, argv) => {
         }
       ]
     },
-    devtool: 'cheap-module-eval-source-map',
+    devtool: 'source-map',
+    // devtool: 'cheap-module-eval-source-map',
     // devtool: 'inline-cheap-source-map',
     devServer: {
       contentBase: dist,
