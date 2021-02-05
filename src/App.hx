@@ -20,6 +20,8 @@ class App
 
 	static function main()
 	{
+		ElectronApp.commandLine.appendArgument('remote-debugging-port', '9222');
+
 		ElectronApp.on('window-all-closed', (e) -> {
 			// Keep the app open if even if windows are closed on OSX (normal mac app behavior)
 			if (process.platform != 'darwin') {
@@ -33,6 +35,7 @@ class App
 		// On macOS it's common to re-create a window in the app when the
 		// dock icon is clicked and there are no other windows open.
 		ElectronApp.on('activate', (e) -> if (mainWindow == null) createWindow());
+
 	}
 
 	static function createWindow()

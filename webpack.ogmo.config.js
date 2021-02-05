@@ -40,7 +40,8 @@ module.exports = (env, argv) => {
         }
       ]
     },
-    devtool: 'source-map',
+    devtool: 'cheap-module-eval-source-map',
+    // devtool: 'inline-cheap-source-map',
     devServer: {
       contentBase: dist,
       overlay: true,
@@ -50,15 +51,15 @@ module.exports = (env, argv) => {
         chunks: false,
         children: false
       },
-      before() {
-        spawn(
-          'electron',
-          [dist],
-          { shell: true, env: process.env, stdio: 'inherit' }
-        )
-        .on('close', code => process.exit(0))
-        .on('error', spawnError => console.error(spawnError))
-      }
+    //   before() {
+    //     spawn(
+    //       'electron',
+    //       [dist],
+    //       { shell: true, env: process.env, stdio: 'inherit' }
+    //     )
+    //     .on('close', code => process.exit(0))
+    //     .on('error', spawnError => console.error(spawnError))
+    //   }
     }
   }
 }
