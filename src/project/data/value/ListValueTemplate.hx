@@ -18,7 +18,7 @@ class ListValueTemplate extends ValueTemplate
 	}
 
 	public var values:Array<ListValueElem> = [];
-	public var defaults:Array<ListValueElem> = [{ content: "1", type: "int" }, { content: "2", type: "float" }];
+	public var defaults:Array<ListValueElem> = [{ content: "1", type: "int" }];
 
 	override function getHashCode():String
 	{

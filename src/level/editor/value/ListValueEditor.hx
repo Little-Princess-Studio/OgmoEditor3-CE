@@ -1,8 +1,5 @@
 package level.editor.value;
 
-import haxe.macro.Expr.Field;
-import electron.main.Dialog;
-import project.data.value.ListValueTemplate.ListValueElem;
 import util.Fields;
 import level.data.Value;
 import project.data.value.ValueTemplate;
@@ -35,19 +32,38 @@ class ListValueEditor extends ValueEditor
 		}
 
 		// create element
-		element = new JQuery('<div>');
+		if (element == null) {
+			element = new JQuery('<div>');
+		}
+		else {
+			element.empty();
+		}
+
 		var i: Int = 0;
-		for (elem in values)
-		{
-			var valueList: Array<ListValueElem> = cast elem.value;
+		var valueList: Array<ListValueElem> = cast values[0].value;
+		if (valueList.length == 0) {
+			Fields.createSettingsBlock(element, new JQuery('<div>'), SettingsBlock.ThreeForths);
+			var addBtn = Fields.createSettingsBlock(element, Fields.createButton('', '+', null), SettingsBlock.Fourth);
+			addBtn.click(function(e) {
+				var valueList: Array<ListValueElem> = cast values[0].value;
+				var templateList: ListValueTemplate = cast template;
+				valueList.insert(0, templateList.defaults[0]);
+				EDITOR.level.store("Changed " + title + " Value");
+				EDITOR.dirty();
+				this.load(template, values);	
+			});
+		}
+		else {
 			for (value in valueList) {
-				var panel = createListElemPanel(value.content, value.type, i, values).appendTo(element);
+				createListElemPanel(value.content, value.type, i, values, template).appendTo(element);
+				i++;
 			}
 		}
 	}
 
-	function createListElemPanel(val: String, type: String, index: Int, values:Array<Value>): JQuery
+	function createListElemPanel(val: String, type: String, index: Int, values:Array<Value>, template: ValueTemplate): JQuery
 	{
+		var title = template.name;
 		var parentPanel = new JQuery('<div>');
 
 		var listPanel = Fields.createField('val-list', val, null);
@@ -62,28 +78,43 @@ class ListValueEditor extends ValueEditor
 
 		addBtn.click(function (e) {
 			var valueList: Array<ListValueElem> = cast values[0].value;
-			valueList.insert(index+1, {content:'1', type: '0'});
+			var templateList: ListValueTemplate = cast template;
+			valueList.insert(index+1, templateList.defaults[0]);
+			EDITOR.level.store("Changed " + title + " Value");
 			EDITOR.dirty();
+			this.load(template, values);
 		});
 
 		delBtn.click(function (e) {
 			var valueList: Array<ListValueElem> = cast values[0].value;
 			valueList.remove(valueList[index]);
+			EDITOR.level.store("Changed " + title + " Value");
 			EDITOR.dirty();
+			this.load(template, values);
 		});
 
 		listPanel.change(function (e) {
 			var v: ListValueElem = cast values[index].value;
 			v.content = listPanel.val();
 			listPanel.val(v.content);
+
+			EDITOR.level.store("Changed " + title + " Value");
+
 			EDITOR.dirty();
+
+			this.load(template, values);
 		});
 
 		typePanel.change(function(e) {
 			var v: ListValueElem = cast values[index].value;
 			v.type = typePanel.val();
 			typePanel.val(v.type);
+
+			EDITOR.level.store("Changed " + title + " Value");
+
 			EDITOR.dirty();
+
+			this.load(template, values);
 		});
 
 		return parentPanel;
