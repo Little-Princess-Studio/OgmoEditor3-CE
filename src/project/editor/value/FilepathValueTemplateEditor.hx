@@ -8,6 +8,7 @@ class FilepathValueTemplateEditor extends ValueTemplateEditor
 {
 	public var defaultField:JQuery;
 	public var extensionsField:JQuery;
+	public var rootField: JQuery;
 
 	override function importInto(into:JQuery)
 	{
@@ -30,6 +31,16 @@ class FilepathValueTemplateEditor extends ValueTemplateEditor
 			if (pathTemplate.extensions.length > 0)
 				fileExtensions.push({name: "Allowed extensions", extensions: pathTemplate.extensions});
 		});
+
+		// roots
+		rootField = Fields.createTextarea("...", extensions);
+		Fields.createSettingsBlock(into, rootField, SettingsBlock.Full, "File Relative Roots (one per line)");
+		rootField.on("input propertychange", function (e) { // Need to update extensions for default val picker
+			save();
+			fileExtensions.splice(0, fileExtensions.length);
+			if (pathTemplate.extensions.length > 0)
+				fileExtensions.push({name: "All Roots", extensions: pathTemplate.roots});
+		});
 	}
 
 	override function save()
@@ -43,5 +54,13 @@ class FilepathValueTemplateEditor extends ValueTemplateEditor
 			pathTemplate.extensions = [];
 		else
 			pathTemplate.extensions = extensions.split("\n");
+
+		var roots = StringTools.trim(Fields.getField(rootField));
+		if (roots.length == 0) {
+			pathTemplate.roots = [];
+		}
+		else {
+			pathTemplate.extensions = roots.split("\n");
+		}
 	}
 }

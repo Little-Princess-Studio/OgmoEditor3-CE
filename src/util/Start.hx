@@ -21,7 +21,6 @@ class Start {
 		IntegerValueTemplate.startup();
 		StringValueTemplate.startup();
 		TextValueTemplate.startup();
-		ListValueTemplate.startup();
 
 		// Editor Panels
 		ProjectGeneralPanel.startup();

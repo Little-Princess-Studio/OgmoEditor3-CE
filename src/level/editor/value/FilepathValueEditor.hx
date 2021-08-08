@@ -16,10 +16,11 @@ class FilepathValueEditor extends ValueEditor
 	public var element:JQuery = null;
 	public var baseButton:JQuery = null;
 	public var selectButton:JQuery = null;
+	public var pathTemplate:FilepathValueTemplate;
 
 	override function load(template:ValueTemplate, values:Array<Value>):Void
 	{
-		var pathTemplate:FilepathValueTemplate = cast template;
+		pathTemplate = cast template;
 
 		title = template.name;
 
@@ -73,8 +74,10 @@ class FilepathValueEditor extends ValueEditor
 			if (lastBaseValue != nextBaseValue || conflictBase)
 			{
 				var nextPathValue:String = null;
-				var from = nextBaseValue == RelativeTo.PROJECT ? "level" : "project";
-				var to = nextBaseValue != RelativeTo.PROJECT ? "level" : "project";
+				// var from = nextBaseValue == RelativeTo.PROJECT ? "level" : "project";
+				// var to = nextBaseValue != RelativeTo.PROJECT ? "level" : "project";
+				var from = lastBaseValue;
+				var to = nextBaseValue;
 				EDITOR.level.store("Changed " + template.name + " Reference from '" + from + "' to '" + to + "'");
 				for (i in 0...values.length)
 				{
@@ -91,11 +94,12 @@ class FilepathValueEditor extends ValueEditor
 				if (!conflictPath)
 					value.path = nextPathValue;
 
-				var btnText = nextBaseValue == RelativeTo.PROJECT ? "Project/" : "Level/";
-				baseButton.find(".button_text").html(btnText);
+				// TODO: change name of label
+				// var btnText = nextBaseValue == RelativeTo.PROJECT ? "Project/" : "Level/";
+				// baseButton.find(".button_text").html(btnText);
 
-				element.addClass(nextBaseValue == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
-				element.removeClass(nextBaseValue != RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
+				// element.addClass(nextBaseValue == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
+				// element.removeClass(nextBaseValue != RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
 			}
 		}
 
@@ -105,7 +109,7 @@ class FilepathValueEditor extends ValueEditor
 
 			element = new JQuery('<input>');
 			if (conflictPath) element.addClass("default-value");
-			element.addClass(value.relativeTo == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
+			// element.addClass(value.relativeTo == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
 			element.val(value.path);
 			element.change(function(e)
 			{
@@ -115,24 +119,27 @@ class FilepathValueEditor extends ValueEditor
 			});
 			element.on("keyup", function(e) { if (e.which == Keys.Enter) element.blur(); });
 
-			var baseButtonLabel = value.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";
+			// var baseButtonLabel = value.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";
+			var baseButtonLabel =value.relativeTo;
 			if (conflictBase)
 				baseButtonLabel = ValueEditor.conflictString() + "/";
 			baseButton = Fields.createButton("", baseButtonLabel, holder);
 			baseButton.width("84px");
 			baseButton.on("click", function()
 			{
-				value.relativeTo = lastBaseValue == RelativeTo.PROJECT ? RelativeTo.LEVEL : RelativeTo.PROJECT;
+				// value.relativeTo = lastBaseValue == RelativeTo.PROJECT ? RelativeTo.LEVEL : RelativeTo.PROJECT;
+				value.relativeTo = this.pathTemplate.roots[0];
 				saveBase();
 
 				if (!conflictPath)
 					element.val(value.path);
 
-				var btnText = value.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";
+				// var btnText = value.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";
+				var btnText = value.relativeTo;
 				baseButton.find(".button_text").html(btnText);
 
-				element.addClass(value.relativeTo == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
-				element.removeClass(value.relativeTo != RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
+				// element.addClass(value.relativeTo == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
+				// element.removeClass(value.relativeTo != RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
 			});
 
 			holder.append(element);

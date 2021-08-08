@@ -120,7 +120,7 @@ class EntityLayerEditor extends LayerEditor
 					var avgX = (corners[0].x + corners[1].x + corners[2].x + corners[3].x) / 4.0;
 					var minY = Math.min(Math.min(corners[0].y, corners[1].y), Math.min(corners[2].y, corners[3].y));
 
-					text.setEntity(entity);
+					// text.setEntity(entity);
 					text.setCanvasPosition(new Vector(avgX, minY), PositionAlignH.Left, PositionAlignV.Bottom);
 					text.setOpacity(EDITOR.draw.getAlpha());
 					text.setFontSize(0.75 * OGMO.settings.propertyDisplay.fontSize);

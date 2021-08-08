@@ -218,6 +218,7 @@ class Ogmo
 		projectEditor.setActive(false);
 		editor.setActive(true);
 		IpcRenderer.send('updateMenu', 'editor');
+		trace("ogmo goto editor page");
 	}
 
 	public function gotoProjectPage():Void

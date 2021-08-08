@@ -350,22 +350,25 @@ class Fields
 		var holder = new JQuery('<div class="filepath">');
 
 		var element = new JQuery('<input>');
-		element.addClass(path.relativeTo == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
+		// element.addClass(path.relativeTo == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
 		element.val(path.path);
 
-		var baseButtonLabel = path.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";
+		// var baseButtonLabel = path.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";
+		var baseButtonLabel = path.relativeTo;
 		var baseButton = Fields.createButton("", baseButtonLabel, holder);
 		baseButton.width("84px");
 		baseButton.on("click", function()
 		{
-			path.switchRelative(path.relativeTo == RelativeTo.PROJECT ? RelativeTo.LEVEL : RelativeTo.PROJECT);
+			// path.switchRelative(path.relativeTo == RelativeTo.PROJECT ? RelativeTo.LEVEL : RelativeTo.PROJECT);
+			path.switchRelative(path.relativeTo);
 			element.val(path.path);
 
-			var btnText = path.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";
+			// var btnText = path.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";
+			var btnText = path.relativeTo;
 			baseButton.find(".button_text").html(btnText);
 
-			element.addClass(path.relativeTo == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
-			element.removeClass(path.relativeTo != RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
+			// element.addClass(path.relativeTo == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
+			// element.removeClass(path.relativeTo != RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
 		});
 
 		holder.append(element);
@@ -399,11 +402,12 @@ class Fields
 
 	public static function setFilepathData(element:JQuery, path:FilepathData):JQuery
 	{
-		var btnText = path.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";
+		// var btnText = path.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";
+		var btnText = path.relativeTo;
 		element.find(".button_text").html(btnText);
 
-		element.find("input").addClass(path.relativeTo == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
-		element.find("input").removeClass(path.relativeTo != RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
+		// element.find("input").addClass(path.relativeTo == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
+		// element.find("input").removeClass(path.relativeTo != RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
 
 		return element.find("input").val(path.path);
 	}
@@ -412,7 +416,8 @@ class Fields
 	{
 		var data = new FilepathData();
 		var relativeToProject = element.find("input").hasClass("relative_to_project");
-		data.relativeTo = relativeToProject ? RelativeTo.PROJECT : RelativeTo.LEVEL;
+		// data.relativeTo = relativeToProject ? RelativeTo.PROJECT : RelativeTo.LEVEL;
+		data.relativeTo = element.find(".button_text").html();
 		data.path = element.find("input").val();
 		return data;
 	}

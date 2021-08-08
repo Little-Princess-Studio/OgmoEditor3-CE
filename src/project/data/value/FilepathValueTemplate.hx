@@ -15,6 +15,7 @@ class FilepathValueTemplate extends ValueTemplate
 	}
 	public var defaults:FilepathData = new FilepathData();
 	public var extensions:Array<String> = [];
+	public var roots:Array<String> = [];
 
 	override function getHashCode():String
 	{

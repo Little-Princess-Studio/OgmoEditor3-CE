@@ -2,18 +2,18 @@ package level.data;
 
 import haxe.io.Path;
 
-enum RelativeTo
-{
-	PROJECT;
-	LEVEL;
-}
+// enum RelativeTo
+// {
+// 	PROJECT;
+// 	LEVEL;
+// }
 
 class FilepathData
 {
-	public var relativeTo:RelativeTo;
+	public var relativeTo:String;
 	public var path:String;
 
-	public function new(path:String = "", relativeTo:RelativeTo = RelativeTo.PROJECT)
+	public function new(path:String = "", relativeTo:String = '/')
 	{
 		this.path = path;
 		this.relativeTo = relativeTo;
@@ -26,14 +26,15 @@ class FilepathData
 
 	public function asString():String
 	{
-		var prefix = "";
-		switch (relativeTo)
-		{
-			case PROJECT:
-				prefix = "proj";
-			case LEVEL:
-				prefix = "lvl";
-		}
+		// var prefix = "";
+		// switch (relativeTo)
+		// {
+		// 	case PROJECT:
+		// 		prefix = "proj";
+		// 	case LEVEL:
+		// 		prefix = "lvl";
+		// }
+		var prefix = relativeTo;
 		return prefix + ":" + path;
 	}
 
@@ -41,24 +42,34 @@ class FilepathData
 	{
 		var data = new FilepathData();
 
-		var projPrefix = "proj:";
-		var lvlPrefix = "lvl:";
+		// var projPrefix = "proj:";
+		// var lvlPrefix = "lvl:";
 
-		if (str.length >= projPrefix.length && str.substr(0, projPrefix.length) == projPrefix)
-		{
-			data.relativeTo = RelativeTo.PROJECT;
-			data.path = str.substring(projPrefix.length, str.length);
-		}
-		else if (str.length >= lvlPrefix.length && str.substr(0, lvlPrefix.length) == lvlPrefix)
-		{
-			data.relativeTo = RelativeTo.LEVEL;
-			data.path = str.substring(lvlPrefix.length, str.length);
-		}
-		else
-		{
-			data.relativeTo = RelativeTo.PROJECT;
-			data.path = str;
-		}
+		// if (str.length >= projPrefix.length && str.substr(0, projPrefix.length) == projPrefix)
+		// {
+		// 	data.relativeTo = RelativeTo.PROJECT;
+		// 	data.path = str.substring(projPrefix.length, str.length);
+		// }
+		// else if (str.length >= lvlPrefix.length && str.substr(0, lvlPrefix.length) == lvlPrefix)
+		// {
+		// 	data.relativeTo = RelativeTo.LEVEL;
+		// 	data.path = str.substring(lvlPrefix.length, str.length);
+		// }
+		// else
+		// {
+		// 	data.relativeTo = RelativeTo.PROJECT;
+		// 	data.path = str;
+		// }
+
+		// data.relativeTo = RelativeTo.PROJECT;
+		// data.path = str.substring(projPrefix.length, str.length);
+
+		var pathArr = str.split(':');
+		var relativeTo = pathArr[0];
+		var path = pathArr[1];
+
+		data.relativeTo = relativeTo;
+		data.path = path;
 
 		return data;
 	}
@@ -68,7 +79,7 @@ class FilepathData
 		return path == to.path && relativeTo == to.relativeTo;
 	}
 
-	public function switchRelative(newRelativeTo:RelativeTo)
+	public function switchRelative(newRelativeTo:String)
 	{
 		var base = getBase();
 		relativeTo = newRelativeTo;
@@ -93,17 +104,23 @@ class FilepathData
 
 	public function getBase():String
 	{
-		switch (relativeTo)
-		{
-			case PROJECT:
-				var path = getProjectDirectoryPath();
-				if (validPath(path))
-					return path;
-			case LEVEL:
-				var path = getLevelDirectoryPath();
-				if (validPath(path))
-					return path;
+		// switch (relativeTo)
+		// {
+		// 	case PROJECT:
+		// 		var path = getProjectDirectoryPath();
+		// 		if (validPath(path))
+		// 			return path;
+		// 	case LEVEL:
+		// 		var path = getLevelDirectoryPath();
+		// 		if (validPath(path))
+		// 			return path;
+		// }
+
+		var path = Path.join([relativeTo, this.path]);
+		if (validPath(path)) {
+			return path;
 		}
+
 		return null;
 	}
 
