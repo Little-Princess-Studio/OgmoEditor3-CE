@@ -345,7 +345,7 @@ class Fields
 		return element.find("input").val();
 	}
 
-	public static function createFilepathData(path:FilepathData, filters:Array<electron.FileFilter>, ?into:JQuery):JQuery
+	public static function createFilepathData(path:FilepathData, roots:Array<String>, filters:Array<electron.FileFilter>, ?into:JQuery):JQuery
 	{
 		var holder = new JQuery('<div class="filepath">');
 
@@ -360,7 +360,7 @@ class Fields
 		baseButton.on("click", function()
 		{
 			// path.switchRelative(path.relativeTo == RelativeTo.PROJECT ? RelativeTo.LEVEL : RelativeTo.PROJECT);
-			path.switchRelative(path.relativeTo);
+			path.switchRelative(roots);
 			element.val(path.path);
 
 			// var btnText = path.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";

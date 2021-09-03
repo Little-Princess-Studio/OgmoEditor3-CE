@@ -12,11 +12,13 @@ class FilepathData
 {
 	public var relativeTo:String;
 	public var path:String;
+	public var index:Int;
 
 	public function new(path:String = "", relativeTo:String = '/')
 	{
 		this.path = path;
 		this.relativeTo = relativeTo;
+		this.index = 0;
 	}
 
 	public function clone():FilepathData
@@ -35,7 +37,7 @@ class FilepathData
 		// 		prefix = "lvl";
 		// }
 		var prefix = relativeTo;
-		return prefix + ":" + path;
+		return prefix + ":" + path + ":" + index.string();
 	}
 
 	public static function parseString(str:String):FilepathData
@@ -67,22 +69,39 @@ class FilepathData
 		var pathArr = str.split(':');
 		var relativeTo = pathArr[0];
 		var path = pathArr[1];
+		var index = pathArr[2];
 
 		data.relativeTo = relativeTo;
 		data.path = path;
+		data.index = index.parseInt();
 
 		return data;
 	}
 
 	public function equals(to:FilepathData)
 	{
-		return path == to.path && relativeTo == to.relativeTo;
+		return path == to.path && relativeTo == to.relativeTo && index == to.index;
 	}
 
-	public function switchRelative(newRelativeTo:String)
+	public function switchRelative(roots:Array<String>)
 	{
+		var len = roots.length;
+		if (len == 0) {
+			this.index = 0;
+			this.relativeTo = '/';
+		}
+		else {
+			if (this.index >= len) {
+				this.index = 0;
+			}
+			else {
+				this.index = (this.index + 1) % len;
+			}
+			this.relativeTo = roots[this.index];
+		}
+
 		var base = getBase();
-		relativeTo = newRelativeTo;
+		// relativeTo = newRelativeTo;
 		var newBase = getBase();
 
 		if (!validPath(path))

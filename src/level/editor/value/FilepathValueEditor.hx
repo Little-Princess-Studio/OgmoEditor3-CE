@@ -1,7 +1,7 @@
 package level.editor.value;
 
 import project.data.ValueDefinition;
-import project.data.value.FilepathValueTemplate;
+import project.data.value.FilePathValueTemplate;
 import js.node.Path;
 import level.data.FilepathData;
 import level.data.Value;
@@ -9,14 +9,14 @@ import project.data.value.ValueTemplate;
 import js.jquery.JQuery;
 import util.Fields;
 
-class FilepathValueEditor extends ValueEditor
+class FilePathValueEditor extends ValueEditor
 {
 	public var title:String;
 	public var holder:JQuery = null;
 	public var element:JQuery = null;
 	public var baseButton:JQuery = null;
 	public var selectButton:JQuery = null;
-	public var pathTemplate:FilepathValueTemplate;
+	public var pathTemplate:FilePathValueTemplate;
 
 	override function load(template:ValueTemplate, values:Array<Value>):Void
 	{
@@ -82,7 +82,7 @@ class FilepathValueEditor extends ValueEditor
 				for (i in 0...values.length)
 				{
 					var data = FilepathData.parseString(values[i].value);
-					data.switchRelative(nextBaseValue);
+					data.switchRelative(pathTemplate.roots);
 					values[i].value = data.asString();
 					nextPathValue = data.path;
 				}
@@ -128,7 +128,8 @@ class FilepathValueEditor extends ValueEditor
 			baseButton.on("click", function()
 			{
 				// value.relativeTo = lastBaseValue == RelativeTo.PROJECT ? RelativeTo.LEVEL : RelativeTo.PROJECT;
-				value.relativeTo = this.pathTemplate.roots[0];
+				// value.relativeTo = this.pathTemplate.roots[0];
+				value.switchRelative(this.pathTemplate.roots);
 				saveBase();
 
 				if (!conflictPath)

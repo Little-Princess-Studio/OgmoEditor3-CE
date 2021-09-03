@@ -1,23 +1,28 @@
 package project.editor.value;
 
+import haxe.macro.Expr.Field;
 import js.jquery.JQuery;
-import project.data.value.FilepathValueTemplate;
+import project.data.value.FilePathValueTemplate;
 import util.Fields;
 
-class FilepathValueTemplateEditor extends ValueTemplateEditor
+class FilePathValueTemplateEditor extends ValueTemplateEditor
 {
 	public var defaultField:JQuery;
 	public var extensionsField:JQuery;
 	public var rootField: JQuery;
+	public var projectPath: JQuery;
 
 	override function importInto(into:JQuery)
 	{
-		var pathTemplate:FilepathValueTemplate = cast template;
+		var pathTemplate:FilePathValueTemplate = cast template;
 
 		// default val
 		var fileExtensions = pathTemplate.extensions.length == 0 ? [] : [{name: "Allowed extensions", extensions: pathTemplate.extensions}];
-		defaultField = Fields.createFilepathData(pathTemplate.defaults, fileExtensions);
+		defaultField = Fields.createFilepathData(pathTemplate.defaults, pathTemplate.roots, fileExtensions);
 		Fields.createSettingsBlock(into, defaultField, SettingsBlock.Half, "Default", SettingsBlock.InlineTitle);
+
+		Fields.createSettingsBlock(into, extensionsField, SettingsBlock.Full, "Project base path");
+		projectPath = Fields.createField('', '', into);
 
 		var extensions = "";
 		for (i in 0...pathTemplate.extensions.length) extensions += (i > 0 ? "\n" : "") + pathTemplate.extensions[i];
@@ -33,19 +38,23 @@ class FilepathValueTemplateEditor extends ValueTemplateEditor
 		});
 
 		// roots
-		rootField = Fields.createTextarea("...", extensions);
+		var root_str = "";
+		for (i in 0...pathTemplate.roots.length) root_str += (i > 0 ? "\n" : "") + pathTemplate.roots[i];
+
+		var roots = pathTemplate.roots.length == 0 ? [] : [{name: "Roots", roots: pathTemplate.roots}];
+		rootField = Fields.createTextarea("...", root_str);
 		Fields.createSettingsBlock(into, rootField, SettingsBlock.Full, "File Relative Roots (one per line)");
 		rootField.on("input propertychange", function (e) { // Need to update extensions for default val picker
 			save();
-			fileExtensions.splice(0, fileExtensions.length);
-			if (pathTemplate.extensions.length > 0)
-				fileExtensions.push({name: "All Roots", extensions: pathTemplate.roots});
+			roots.splice(0, roots.length);
+			if (pathTemplate.roots.length > 0)
+				roots.push({name: "Roots", roots: pathTemplate.roots});
 		});
 	}
 
 	override function save()
 	{
-		var pathTemplate:FilepathValueTemplate = cast template;
+		var pathTemplate:FilePathValueTemplate = cast template;
 
 		pathTemplate.defaults = Fields.getFilepathData(defaultField);
 
@@ -57,10 +66,15 @@ class FilepathValueTemplateEditor extends ValueTemplateEditor
 
 		var roots = StringTools.trim(Fields.getField(rootField));
 		if (roots.length == 0) {
-			pathTemplate.roots = [];
+			pathTemplate.roots.splice(0, pathTemplate.roots.length);
 		}
 		else {
-			pathTemplate.extensions = roots.split("\n");
+			// pathTemplate.roots = roots.split("\n");
+			pathTemplate.roots.splice(0, pathTemplate.roots.length);
+			var tmpRoots = roots.split("\n");
+			for (i in tmpRoots) {
+				pathTemplate.roots.push(i);
+			}
 		}
 	}
 }
