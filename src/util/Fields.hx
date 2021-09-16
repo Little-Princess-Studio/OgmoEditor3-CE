@@ -375,25 +375,26 @@ class Fields
 
 		var selectButton = Fields.createButton("save", "", holder);
 		selectButton.width("34px");
-		selectButton.on("click", function()
-		{
-			var projectDirPath = FilepathData.getProjectDirectoryPath();
-			var basePath = path.getBase();
-			var fullPath = path.getFull();
-			var initialPath = fullPath;
-			if (initialPath == null || !FileSystem.exists(initialPath))
-				initialPath = basePath;
-			if (initialPath == null || !FileSystem.exists(initialPath))
-				initialPath = projectDirPath;
+		// selectButton.on("click", function()
+		// {
+		// 	var projectDirPath = FilepathData.getProjectDirectoryPath();
+		// 	var basePath = path.getBase();
+		// 	var fullPath = path.getFull();
+		// 	var initialPath = fullPath;
+		// 	if (initialPath == null || !FileSystem.exists(initialPath))
+		// 		initialPath = basePath;
+		// 	if (initialPath == null || !FileSystem.exists(initialPath))
+		// 		initialPath = projectDirPath;
 
-			var chosenPath = FileSystem.chooseFile("Select Path", filters, initialPath);
-			if (chosenPath.length == 0)
-				return;
+		// 	var chosenPath = FileSystem.chooseFile("Select Path", filters, initialPath);
+		// 	if (chosenPath.length == 0)
+		// 		return;
 
-			var relativePath = FileSystem.normalize(Path.relative(basePath == null ? projectDirPath : basePath, chosenPath));
-			path.path = relativePath;
-			element.val(relativePath);
-		});
+		// 	// var relativePath = FileSystem.normalize(Path.relative(basePath == null ? projectDirPath : basePath, chosenPath));
+		// 	var relativePath = FileSystem.normalize(Path.relative(projectDirPath, chosenPath));
+		// 	path.path = relativePath;
+		// 	element.val(relativePath);
+		// });
 
 		if (into != null) into.append(holder);
 

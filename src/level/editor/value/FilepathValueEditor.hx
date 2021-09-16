@@ -149,21 +149,22 @@ class FilePathValueEditor extends ValueEditor
 			selectButton.width("34px");
 			selectButton.on("click", function()
 			{
-				var projectDirPath = FilepathData.getProjectDirectoryPath();
-				var basePath = value.getBase();
-				var fullPath = value.getFull();
-				var initialPath = fullPath;
-				if (initialPath == null || !FileSystem.exists(initialPath))
-					initialPath = basePath;
-				if (initialPath == null || !FileSystem.exists(initialPath))
-					initialPath = projectDirPath;
+				var projectPath = pathTemplate.projectpath;
+				var projectDirPath = projectPath == null ? FilepathData.getProjectDirectoryPath() : projectPath;
+				// var basePath = value.getBase();
+				// var fullPath = value.getFull();
+				var initialPath = projectPath + '\\' + value.relativeTo;
+				// if (initialPath == null || !FileSystem.exists(initialPath))
+				// 	initialPath = basePath;
+				// if (initialPath == null || !FileSystem.exists(initialPath))
+				// 	initialPath = projectDirPath;
 
 				var fileExtensions = pathTemplate.extensions.length == 0 ? [] : [{name: "Allowed extensions", extensions: pathTemplate.extensions}];
 				var chosenPath = FileSystem.chooseFile("Select Path", fileExtensions, initialPath);
 				if (chosenPath.length == 0)
 					return;
 
-				var relativePath = FileSystem.normalize(Path.relative(basePath == null ? projectDirPath : basePath, chosenPath));
+				var relativePath = FileSystem.normalize(Path.relative(initialPath, chosenPath));
 				value.path = relativePath;
 				savePath();
 				element.val(value.path);

@@ -135,7 +135,8 @@ class FilepathData
 		// 			return path;
 		// }
 
-		var path = Path.join([relativeTo, this.path]);
+		// var path = Path.join([relativeTo, this.path]);
+		var path = relativeTo;
 		if (validPath(path)) {
 			return path;
 		}
@@ -148,7 +149,8 @@ class FilepathData
 		var base = getBase();
 		if (validPath(base))
 		{
-			var full = Path.join([base, path]);
+			// var full = Path.join([base, path]);
+			var full = path;
 			full = Path.normalize(full);
 			if (validPath(full))
 				return full;

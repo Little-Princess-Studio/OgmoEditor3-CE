@@ -10,7 +10,7 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 	public var defaultField:JQuery;
 	public var extensionsField:JQuery;
 	public var rootField: JQuery;
-	public var projectPath: JQuery;
+	public var projectPathField: JQuery;
 
 	override function importInto(into:JQuery)
 	{
@@ -21,8 +21,14 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 		defaultField = Fields.createFilepathData(pathTemplate.defaults, pathTemplate.roots, fileExtensions);
 		Fields.createSettingsBlock(into, defaultField, SettingsBlock.Half, "Default", SettingsBlock.InlineTitle);
 
+		// base path
 		Fields.createSettingsBlock(into, extensionsField, SettingsBlock.Full, "Project base path");
-		projectPath = Fields.createField('', '', into);
+		projectPathField = Fields.createField('', pathTemplate.projectpath, into);
+
+		projectPathField.on("input propertychange", function (e) { // Need to update extensions for default val picker
+			var projectpath = StringTools.trim(Fields.getField(projectPathField));
+			pathTemplate.projectpath = projectpath;
+		});
 
 		var extensions = "";
 		for (i in 0...pathTemplate.extensions.length) extensions += (i > 0 ? "\n" : "") + pathTemplate.extensions[i];
