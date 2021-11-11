@@ -339,6 +339,10 @@ class GLRenderer
 
 	public function drawTile(x:Float, y:Float, tileset:Tileset, tile:TileData): Void
 	{
+		if (tileset == null) {
+			return;
+		}
+
 		setTexture(tileset.texture);
 
 		var tx = (tile.idx % tileset.tileColumns);

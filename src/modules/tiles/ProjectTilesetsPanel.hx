@@ -173,6 +173,11 @@ class ProjectTilesetsPanel extends ProjectEditorPanel
 	public function refreshCanvas(context:CanvasRenderingContext2D):Void
 	{
 		var tileset = inspecting;
+
+		if (tileset == null) {
+			return;
+		}
+
 		var s = zoom;
 
 		context.clearRect(0, 0, tileset.width * s, tileset.height * s);

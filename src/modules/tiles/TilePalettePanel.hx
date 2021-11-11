@@ -263,11 +263,11 @@ class TilePalettePanel extends SidePanel
 		context.imageSmoothingEnabled = false;
 
 		var tileset = tileset;
-		var image = tileset.texture.image;
 		var spacing = spacing;
 
 		if (tileset != null)
 		{
+			var image = tileset.texture.image;
 			if (image.width <= 0)
 			{
 				image.addEventListener("load", function (e) {
