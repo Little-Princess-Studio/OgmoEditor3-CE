@@ -1,5 +1,6 @@
 package util;
 
+import js.html.Console;
 import js.node.Path;
 import io.FileSystem;
 import io.Imports;
@@ -395,6 +396,25 @@ class Fields
 		// 	path.path = relativePath;
 		// 	element.val(relativePath);
 		// });
+
+		var autoCompleteHolder = new JQuery('<ul class="auto-complete-holder">');
+		autoCompleteHolder.hide();
+
+		autoCompleteHolder.on('click', function (e)
+		{
+			var targetPath = e.target.dataset.path;
+
+			if (targetPath != null && FileSystem.exists(targetPath)) {
+				var projectDirPath = FilepathData.getProjectDirectoryPath();
+				var relativePath = FileSystem.normalize(Path.relative(Path.resolve(projectDirPath, path.relativeTo), targetPath));
+				path.path = relativePath;
+				element.val(relativePath);
+			}
+
+			autoCompleteHolder.hide();
+		});
+
+		holder.append(autoCompleteHolder);
 
 		if (into != null) into.append(holder);
 
