@@ -208,11 +208,14 @@ textarea, input, button, select { font-family: inherit; }
         cursor: pointer;
         padding: 2px 8px 2px 8px;
         height: 24px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
 
         &:hover {
             font-weight: bold;
             color: white;
-            background-color: rgb(54, 54, 246);
+            background-color: #4784ff;
         }
     }
 }

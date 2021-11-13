@@ -28,7 +28,7 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 
 		var defaultInput = defaultField.find('input');
 		defaultInput.on('focus', function () {
-			refreshList(null);
+			refreshSuggestList(null);
 		});
 		defaultInput.on('blur', function () {
 			Browser.window.setTimeout(() -> {
@@ -37,7 +37,7 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 		});
 		defaultInput.on('input propertychange', throttle((e) -> {
 			var value = StringTools.trim(e.currentTarget.value).toLowerCase();
-			refreshList(value);
+			refreshSuggestList(value);
 		}, 500));
 
 		// base path
@@ -76,11 +76,11 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 				roots.push({name: "Roots", roots: pathTemplate.roots});
 		});
 
-		projectPathField.on('blur', refreshAutoCompleteList);
-		extensionsField.on('blur', refreshAutoCompleteList);
-		rootField.on('blur', refreshAutoCompleteList);
+		projectPathField.on('blur', refreshDirectoryCache);
+		extensionsField.on('blur', refreshDirectoryCache);
+		rootField.on('blur', refreshDirectoryCache);
 
-		refreshAutoCompleteList();
+		refreshDirectoryCache();
 	}
 
 	function throttle(fn, delay) {
@@ -98,7 +98,7 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 		}
 	}
 
-	function refreshList(value) {
+	function refreshSuggestList(value) {
 		var pathTemplate:FilePathValueTemplate = cast template;
 		var suggestList = directoryCache.get(pathTemplate.projectpath);
 
@@ -109,13 +109,14 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 			var list = suggestList.get(pathTemplate.defaults.relativeTo.toLowerCase());
 			if (list != null) {
 				var result = value == null ? list : list.filter(it -> it.toLowerCase().indexOf(value) > -1);
+
 				holder.append(result.map(it -> '<li data-path="$it">${Path.basename(it)}</li>'));
 				defaultField.find('.auto-complete-holder').show();
 			}
 		}
 	}
 
-	function refreshAutoCompleteList()
+	function refreshDirectoryCache()
 	{
 		var pathTemplate:FilePathValueTemplate = cast template;
 		var projectpath = pathTemplate.projectpath;
@@ -149,8 +150,6 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 				}
 
 				rootMap.set(root.toLowerCase(), files);
-			} else {
-				directoryCache.remove(dir);
 			}
 		}
 	}
