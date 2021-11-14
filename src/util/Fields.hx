@@ -1,5 +1,6 @@
 package util;
 
+import project.data.value.FilePathValueTemplate;
 import js.html.Console;
 import js.node.Path;
 import io.FileSystem;
@@ -346,7 +347,7 @@ class Fields
 		return element.find("input").val();
 	}
 
-	public static function createFilepathData(path:FilepathData, roots:Array<String>, filters:Array<electron.FileFilter>, ?into:JQuery):JQuery
+	public static function createFilepathData(path:FilepathData, pathTemplate: FilePathValueTemplate, roots:Array<String>, filters:Array<electron.FileFilter>, ?into:JQuery):JQuery
 	{
 		var holder = new JQuery('<div class="filepath">');
 
@@ -404,8 +405,10 @@ class Fields
 		{
 			var targetPath = e.target.dataset.path;
 
+			Console.log('click:', targetPath);
+
 			if (targetPath != null && FileSystem.exists(targetPath)) {
-				var projectDirPath = FilepathData.getProjectDirectoryPath();
+				var projectDirPath = pathTemplate.projectpath == null ? FilepathData.getProjectDirectoryPath() : pathTemplate.projectpath;
 				var relativePath = FileSystem.normalize(Path.relative(Path.resolve(projectDirPath, path.relativeTo), targetPath));
 				path.path = relativePath;
 				element.val(relativePath);

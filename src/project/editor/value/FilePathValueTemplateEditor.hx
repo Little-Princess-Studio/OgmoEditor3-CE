@@ -26,7 +26,7 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 
 		// default val
 		var fileExtensions = pathTemplate.extensions.length == 0 ? [] : [{name: "Allowed extensions", extensions: pathTemplate.extensions}];
-		defaultField = Fields.createFilepathData(defaults, pathTemplate.roots, fileExtensions);
+		defaultField = Fields.createFilepathData(defaults, pathTemplate, pathTemplate.roots, fileExtensions);
 		Fields.createSettingsBlock(into, defaultField, SettingsBlock.Half, "Default", SettingsBlock.InlineTitle);
 
 		var defaultInput = defaultField.find('input');
@@ -115,7 +115,7 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 				var result = value == null || value.length == 0 ? list : list.filter(it -> it.toLowerCase().indexOf(value) > -1);
 
 				holder.append(result.map(it -> '<li data-path="$it">${Path.basename(it)}</li>'));
-				defaultField.find('.auto-complete-holder').show();
+				holder.show();
 			}
 		}
 	}

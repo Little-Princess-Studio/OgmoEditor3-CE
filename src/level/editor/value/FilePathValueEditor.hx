@@ -1,5 +1,7 @@
 package level.editor.value;
 
+import js.html.Console;
+import js.Browser;
 import project.data.ValueDefinition;
 import project.data.value.FilePathValueTemplate;
 import js.node.Path;
@@ -17,6 +19,57 @@ class FilePathValueEditor extends ValueEditor
 	public var baseButton:JQuery = null;
 	public var selectButton:JQuery = null;
 	public var pathTemplate:FilePathValueTemplate;
+	private var suggestFilesCache: Map<String, Array<String>> = new Map();
+
+	function initSuggestFilesCache(projectpath: String, roots: Array<String>, extensions: Array<String>) {
+		if (projectpath == null) {
+			projectpath = FilepathData.getProjectDirectoryPath();
+		}
+
+		extensions = extensions.map(it -> {
+			// add '.' character
+			if (it.charAt(0) != '.') {
+				it = '.' + it;
+			}
+
+			return it.toLowerCase();
+		});
+
+		if (roots.length == 0) {
+			roots = ['.'];
+		}
+
+		for (root in roots) {
+			var dir = Path.resolve(projectpath, root);
+
+			if (FileSystem.exists(dir) && FileSystem.stat(dir).isDirectory()) {
+				var files = FileSystem.readDirectory(dir).map(it -> Path.resolve(dir, it));
+
+				if (extensions.length > 0) {
+					files = files.filter(it -> extensions.indexOf(Path.extname(it).toLowerCase()) > -1);
+				}
+
+				suggestFilesCache.set(root.toLowerCase(), files);
+			}
+		}
+	}
+
+	function refreshSuggestList(value: String) {
+		if (pathTemplate == null || holder == null) {
+			return;
+		}
+
+		var list = holder.find('.auto-complete-holder');
+		list.empty();
+
+		var suggestList = suggestFilesCache.get(baseButton.find(".button_text").html().toLowerCase());
+		if (suggestList != null) {
+			var result = value == null || value.length == 0 ? suggestList : suggestList.filter(it -> it.toLowerCase().indexOf(value) > -1);
+
+			list.append(result.map(it -> '<li data-path="$it">${Path.basename(it)}</li>'));
+			list.show();
+		}
+	}
 
 	override function load(template:ValueTemplate, values:Array<Value>):Void
 	{
@@ -46,6 +99,8 @@ class FilePathValueEditor extends ValueEditor
 
 		var lastPathValue = value.path;
 		var lastBaseValue = conflictBase ? null : value.relativeTo;
+
+		initSuggestFilesCache(pathTemplate.projectpath, pathTemplate.roots, pathTemplate.extensions);
 
 		function savePath()
 		{
@@ -107,6 +162,25 @@ class FilePathValueEditor extends ValueEditor
 		{
 			holder = new JQuery('<div class="filepath">');
 
+			// suggest list
+			var suggestlist = new JQuery('<ul class="auto-complete-holder">');
+			suggestlist.attr('style', 'top: unset; bottom: 100%');
+			suggestlist.hide();
+			suggestlist.on('click', (e) -> {
+				var targetPath = e.target.dataset.path;
+
+				if (targetPath != null && FileSystem.exists(targetPath)) {
+					var projectPath = pathTemplate.projectpath;
+					var projectDirPath = projectPath == null ? FilepathData.getProjectDirectoryPath() : projectPath;
+					var relativePath = FileSystem.normalize(Path.relative(Path.resolve(projectDirPath, value.relativeTo), targetPath));
+					value.path = relativePath;
+					savePath();
+					element.val(relativePath);
+				}
+				suggestlist.hide();
+			});
+			holder.append(suggestlist);
+
 			element = new JQuery('<input>');
 			if (conflictPath) element.addClass("default-value");
 			// element.addClass(value.relativeTo == RelativeTo.PROJECT ? "relative_to_project" : "relative_to_level");
@@ -118,6 +192,20 @@ class FilePathValueEditor extends ValueEditor
 				element.val(value.path);
 			});
 			element.on("keyup", function(e) { if (e.which == Keys.Enter) element.blur(); });
+			element.on('focus', function() {
+				var value = StringTools.trim(element.val());
+				refreshSuggestList(value);
+			});
+			element.on('input', function(e)
+			{
+				var value = StringTools.trim(e.currentTarget.value).toLowerCase();
+				refreshSuggestList(value);
+			});
+			element.on('blur', function() {
+				Browser.window.setTimeout(() -> {
+					suggestlist.hide();
+				}, 250);
+			});
 
 			// var baseButtonLabel = value.relativeTo == RelativeTo.PROJECT ? "Project/" : "Level/";
 			var baseButtonLabel =value.relativeTo;
