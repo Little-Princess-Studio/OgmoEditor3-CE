@@ -1,5 +1,6 @@
 package project.editor.value;
 
+import level.data.FilepathData;
 import js.Browser;
 import js.node.Path;
 import js.html.Console;
@@ -16,19 +17,22 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 	public var rootField: JQuery;
 	public var projectPathField: JQuery;
 	private var directoryCache: Map<String, Map<String, Array<String>>> = new Map();
+	private var defaults: FilepathData;
 
 	override function importInto(into:JQuery)
 	{
 		var pathTemplate:FilePathValueTemplate = cast template;
+		defaults = pathTemplate.defaults;
 
 		// default val
 		var fileExtensions = pathTemplate.extensions.length == 0 ? [] : [{name: "Allowed extensions", extensions: pathTemplate.extensions}];
-		defaultField = Fields.createFilepathData(pathTemplate.defaults, pathTemplate.roots, fileExtensions);
+		defaultField = Fields.createFilepathData(defaults, pathTemplate.roots, fileExtensions);
 		Fields.createSettingsBlock(into, defaultField, SettingsBlock.Half, "Default", SettingsBlock.InlineTitle);
 
 		var defaultInput = defaultField.find('input');
 		defaultInput.on('focus', function () {
-			refreshSuggestList(null);
+			var value = StringTools.trim(defaultInput.val());
+			refreshSuggestList(value);
 		});
 		defaultInput.on('blur', function () {
 			Browser.window.setTimeout(() -> {
@@ -98,7 +102,7 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 		}
 	}
 
-	function refreshSuggestList(value) {
+	function refreshSuggestList(value: String) {
 		var pathTemplate:FilePathValueTemplate = cast template;
 		var suggestList = directoryCache.get(pathTemplate.projectpath);
 
@@ -106,9 +110,9 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 		holder.empty();
 
 		if (suggestList != null) {
-			var list = suggestList.get(pathTemplate.defaults.relativeTo.toLowerCase());
+			var list = suggestList.get(defaults.relativeTo.toLowerCase());
 			if (list != null) {
-				var result = value == null ? list : list.filter(it -> it.toLowerCase().indexOf(value) > -1);
+				var result = value == null || value.length == 0 ? list : list.filter(it -> it.toLowerCase().indexOf(value) > -1);
 
 				holder.append(result.map(it -> '<li data-path="$it">${Path.basename(it)}</li>'));
 				defaultField.find('.auto-complete-holder').show();
