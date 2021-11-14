@@ -1,9 +1,14 @@
 package project.editor.value;
 
+import level.data.FilepathData;
+import js.Browser;
+import js.node.Path;
+import js.html.Console;
 import haxe.macro.Expr.Field;
 import js.jquery.JQuery;
 import project.data.value.FilePathValueTemplate;
 import util.Fields;
+import io.FileSystem;
 
 class FilePathValueTemplateEditor extends ValueTemplateEditor
 {
@@ -11,15 +16,33 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 	public var extensionsField:JQuery;
 	public var rootField: JQuery;
 	public var projectPathField: JQuery;
+	private var directoryCache: Map<String, Map<String, Array<String>>> = new Map();
+	private var defaults: FilepathData;
 
 	override function importInto(into:JQuery)
 	{
 		var pathTemplate:FilePathValueTemplate = cast template;
+		defaults = pathTemplate.defaults;
 
 		// default val
 		var fileExtensions = pathTemplate.extensions.length == 0 ? [] : [{name: "Allowed extensions", extensions: pathTemplate.extensions}];
-		defaultField = Fields.createFilepathData(pathTemplate.defaults, pathTemplate.roots, fileExtensions);
+		defaultField = Fields.createFilepathData(defaults, pathTemplate, pathTemplate.roots, fileExtensions);
 		Fields.createSettingsBlock(into, defaultField, SettingsBlock.Half, "Default", SettingsBlock.InlineTitle);
+
+		var defaultInput = defaultField.find('input');
+		defaultInput.on('focus', function () {
+			var value = StringTools.trim(defaultInput.val());
+			refreshSuggestList(value);
+		});
+		defaultInput.on('blur', function () {
+			Browser.window.setTimeout(() -> {
+				defaultField.find('.auto-complete-holder').hide();
+			}, 250);
+		});
+		defaultInput.on('input propertychange', throttle((e) -> {
+			var value = StringTools.trim(e.currentTarget.value).toLowerCase();
+			refreshSuggestList(value);
+		}, 500));
 
 		// base path
 		Fields.createSettingsBlock(into, extensionsField, SettingsBlock.Full, "Project base path");
@@ -56,6 +79,83 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 			if (pathTemplate.roots.length > 0)
 				roots.push({name: "Roots", roots: pathTemplate.roots});
 		});
+
+		projectPathField.on('blur', refreshDirectoryCache);
+		extensionsField.on('blur', refreshDirectoryCache);
+		rootField.on('blur', refreshDirectoryCache);
+
+		refreshDirectoryCache();
+	}
+
+	function throttle(fn, delay) {
+		var valid = true;
+		return (e) -> {
+			if (!valid) {
+				return false;
+			}
+			valid = false;
+			Browser.window.setTimeout(() -> {
+				fn(e);
+				valid = true;
+			}, delay);
+			return true;
+		}
+	}
+
+	function refreshSuggestList(value: String) {
+		var pathTemplate:FilePathValueTemplate = cast template;
+		var suggestList = directoryCache.get(pathTemplate.projectpath);
+
+		var holder = defaultField.find('.auto-complete-holder');
+		holder.empty();
+
+		if (suggestList != null) {
+			var list = suggestList.get(defaults.relativeTo.toLowerCase());
+			if (list != null) {
+				var result = value == null || value.length == 0 ? list : list.filter(it -> it.toLowerCase().indexOf(value) > -1);
+
+				holder.append(result.map(it -> '<li data-path="$it">${Path.basename(it)}</li>'));
+				holder.show();
+			}
+		}
+	}
+
+	function refreshDirectoryCache()
+	{
+		var pathTemplate:FilePathValueTemplate = cast template;
+		var projectpath = pathTemplate.projectpath;
+		var extensions = pathTemplate.extensions.map(it -> {
+			// add '.' character
+			if (it.charAt(0) != '.') {
+				it = '.' + it;
+			}
+
+			return it.toLowerCase();
+		});
+		var roots = pathTemplate.roots;
+
+		var rootMap = null;
+
+		if (directoryCache.exists(projectpath)) {
+			rootMap = directoryCache.get(projectpath);
+		} else {
+			rootMap = new Map<String, Array<String>>();
+			directoryCache.set(projectpath, rootMap);
+		}
+
+		for (root in roots) {
+			var dir = Path.resolve(projectpath, root);
+
+			if (FileSystem.exists(dir) && FileSystem.stat(dir).isDirectory()) {
+				var files = FileSystem.readDirectory(dir).map(it -> Path.resolve(dir, it));
+
+				if (extensions.length > 0) {
+					files = files.filter(it -> extensions.indexOf(Path.extname(it).toLowerCase()) > -1);
+				}
+
+				rootMap.set(root.toLowerCase(), files);
+			}
+		}
 	}
 
 	override function save()
