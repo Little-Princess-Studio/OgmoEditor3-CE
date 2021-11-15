@@ -457,10 +457,6 @@ class Editor
 			var paletteElement = new JQuery(".editor_palette");
 			var selectionElement = new JQuery(".editor_selection");
 
-			paletteElement.empty();
-			if (currentLayerEditor.palettePanel != null)
-				currentLayerEditor.palettePanel.populate(paletteElement);
-
 			selectionElement.empty();
 			if (currentLayerEditor.selectionPanel != null)
 			{
@@ -478,6 +474,11 @@ class Editor
 				paletteElement.height("100%");
 				selectionElement.hide();
 				new JQuery(".editor_palette_resizer").hide();
+			}
+
+			paletteElement.empty();
+			if (currentLayerEditor.palettePanel != null) {
+				currentLayerEditor.palettePanel.populate(paletteElement);
 			}
 		}
 

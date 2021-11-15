@@ -1,5 +1,6 @@
 package modules.tiles;
 
+import js.html.Console;
 import modules.tiles.TileLayer.TileData;
 import js.Browser;
 import js.jquery.Event;
@@ -45,10 +46,9 @@ class TilePalettePanel extends SidePanel
 	override function populate(into: JQuery):Void
 	{
 		this.into = into;
-
 		// options
 		{
-			options = new JQuery('<select style="width: 100%; max-width: 100%; box-sizing: border-box; border-radius: 0; border-left: 0; border-top: 0; border-right: 0; height: 40px;">');
+			options = new JQuery('<select style="display: none; width: 100%; max-width: 100%; box-sizing: border-box; border-radius: 0; border-left: 0; border-top: 0; border-right: 0; height: 40px;">');
 			var current = 0;
 			for (i in 0...OGMO.project.tilesets.length)
 			{
@@ -252,7 +252,7 @@ class TilePalettePanel extends SidePanel
 	override function refresh():Void
 	{
 		canvas.width = into.width().floor() - 4;
-		canvas.height = into.height().floor() - 40;
+		canvas.height = into.height().floor();
 		canvas.style.width = canvas.width + "px";
 		canvas.style.height = canvas.height + "px";
 
