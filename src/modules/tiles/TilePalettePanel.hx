@@ -12,6 +12,7 @@ import level.editor.ui.SidePanel;
 
 class TilePalettePanel extends SidePanel
 {
+	private var animationId:Int = null;
 	public var layerEditor:TileLayerEditor;
 	public var into:JQuery;
 	public var options:JQuery;
@@ -249,7 +250,17 @@ class TilePalettePanel extends SidePanel
 		matrix.ty = Math.min(8, Math.max(- (th - vh) - 8, matrix.ty));
 	}
 
-	override function refresh():Void
+	override function refresh():Void {
+		if (this.animationId != null) {
+			return;
+		}
+		this.animationId = Browser.window.requestAnimationFrame((ts) -> {
+			draw();
+			this.animationId = null;
+		});
+	}
+
+	function draw():Void
 	{
 		canvas.width = into.width().floor() - 4;
 		canvas.height = into.height().floor();
@@ -284,11 +295,32 @@ class TilePalettePanel extends SidePanel
 			var tx = tileset.tileSeparationX + tileset.tileMarginX, x = 0;
 			while(tx < image.width - tileset.tileMarginX)
 			{
+				var drawX = x * (tileset.tileWidth + spacing);
 				var ty = tileset.tileSeparationY + tileset.tileMarginY, y = 0;
+
+				if ((drawX + tileset.tileWidth) * matrix.a + matrix.tx < 0) {
+					tx += tileset.tileWidth + tileset.tileSeparationX;
+					x++;
+					continue;
+				}
+
+				if (drawX * matrix.a + matrix.tx > canvas.width) {
+					break;
+				}
+
 				while(ty < image.height - tileset.tileMarginY)
 				{
-					var drawX = x * (tileset.tileWidth + spacing);
 					var drawY = y * (tileset.tileHeight + spacing);
+
+					if ((drawY + tileset.tileHeight) * matrix.d + matrix.ty < 0) {
+						ty += tileset.tileHeight + tileset.tileSeparationY;
+						y++;
+						continue;
+					}
+
+					if (drawY * matrix.d + matrix.ty > canvas.height) {
+						break;
+					}
 
 					context.fillRect(drawX - spacing / 2, drawY - spacing / 2, tileset.tileWidth / 2 + spacing / 2, tileset.tileHeight / 2 + spacing / 2);
 					context.fillRect(drawX + tileset.tileWidth / 2, drawY + tileset.tileHeight / 2, tileset.tileWidth / 2 + spacing / 2, tileset.tileHeight / 2 + spacing / 2);
