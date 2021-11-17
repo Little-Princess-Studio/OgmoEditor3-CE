@@ -60,7 +60,14 @@ class Tileset
 		var data:Dynamic = {};
 		data.label = label;
 		data.path = path;
-		data.image = texture.image.src;
+		if (path != null && path.length > 0) {
+			var ext = Path.extname(path);
+			data.normalPath = path.substring(0, path.length - ext.length);
+		} else {
+			data.normalPath = path;
+		}
+		// don't save base64 data
+		// data.image = texture.image.src;
 		data.tileWidth = tileWidth;
 		data.tileHeight = tileHeight;
 		data.tileSeparationX = tileSeparationX;
@@ -72,8 +79,8 @@ class Tileset
 
 	public static function load(project:Project, data:Dynamic):Tileset
 	{
-		var img = Browser.document.createImageElement();
-		img.src = data.image;
+		// var img = Browser.document.createImageElement();
+		// img.src = data.image;
 
 		var marginX:Int = 0;
 		if (Reflect.hasField(data, "tileMarginX"))
@@ -82,7 +89,7 @@ class Tileset
 		if (Reflect.hasField(data, "tileMarginY"))
 			marginY = data.tileMarginY;
 
-		return new Tileset(project, data.label, data.path, data.tileWidth, data.tileHeight, data.tileSeparationX, data.tileSeparationY, marginX, marginY, img);
+		return new Tileset(project, data.label, data.path, data.tileWidth, data.tileHeight, data.tileSeparationX, data.tileSeparationY, marginX, marginY);
 	}
 
 	public inline function getTileX(id: Int):Int return id % tileColumns;
