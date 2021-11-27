@@ -61,8 +61,10 @@ class Tileset
 		data.label = label;
 		data.path = path;
 		if (path != null && path.length > 0) {
+			// TODO: hard code relative path
 			var ext = Path.extname(path);
-			data.normalPath = path.substring(0, path.length - ext.length);
+			var normalPath = path.substring(0, path.length - ext.length);
+			data.normalPath = StringTools.replace(normalPath, '../', '');
 		} else {
 			data.normalPath = path;
 		}
