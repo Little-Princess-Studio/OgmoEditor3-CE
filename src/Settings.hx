@@ -19,6 +19,7 @@ class Settings
 	public var shapes:Array<ShapeData> = [];
 	public var populateInto:JQuery;
 	public var filepath:String = '';
+	public var lang:String = 'zh';
 
 	public function new()
 	{
@@ -35,6 +36,7 @@ class Settings
 			undoLimit: undoLimit,
 			propertyDisplay: propertyDisplay.save(),
 			shapes: s,
+			lang: lang,
 		}
 
 		FileSystem.saveJSON(data, filepath);
@@ -49,6 +51,9 @@ class Settings
 		recentProjects = data.recentProjects;
 		openLevelLimit = data.openLevelLimit;
 		undoLimit = data.undoLimit;
+		if (data.lang != null) {
+			lang = data.lang;
+		}
 		if (Reflect.hasField(data, "propertyDisplay"))
 			propertyDisplay.load(data.propertyDisplay);
 		shapes = [ for (shape in data_shapes) new ShapeData(shape.label, shape.points) ];
