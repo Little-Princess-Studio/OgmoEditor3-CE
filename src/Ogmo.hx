@@ -28,7 +28,7 @@ class Ogmo
 
 	public var version:String = 'v0.001';
 	public var settings:Settings;
-	public var lang:Lang;
+	public var _lang:Lang;
 	public var keyCheckMap:Array<Bool> = [];
 	public var keyPressMap:Array<Bool> = [];
 	public var app:BrowserWindow = Remote.getCurrentWindow();
@@ -57,7 +57,7 @@ class Ogmo
 		ogmo = this;
 		dialog = js.Lib.require('electron').remote.dialog;
 		settings = new Settings();
-		lang = new Lang();
+		_lang = new Lang();
 
 		version = untyped Remote.app.getVersion();
 
@@ -70,7 +70,7 @@ class Ogmo
 	{
 		//Load settings
 		settings.load();
-		lang.load(settings.lang);
+		_lang.load(settings.lang);
 
 		// initialize
 		new Editor();
@@ -230,6 +230,10 @@ class Ogmo
 		editor.setActive(false);
 		projectEditor.setActive(true);
 		IpcRenderer.send('updateMenu', 'project');
+	}
+
+	public function lang(str: String): String {
+		return _lang.lang(str);
 	}
 
 	/*

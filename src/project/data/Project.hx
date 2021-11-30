@@ -42,7 +42,7 @@ class Project
 
 	public function new(path:String)
 	{
-		this.name = "New Project";
+		this.name = OGMO.lang('New Project');
 		this.path = Path.resolve(path);
 		this.projectHooks = new ProjectHooks();
 	}

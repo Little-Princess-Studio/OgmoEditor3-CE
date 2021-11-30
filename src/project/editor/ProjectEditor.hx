@@ -26,12 +26,20 @@ class ProjectEditor
 		content = root.find(".project_content");
 		display = root.css("display");
 
+		var btn_save = root.find(".project_save");
+		var btn_save_update = root.find(".project_save_update");
+		var btn_cancel = root.find(".project_cancel");
+
+		btn_save.find('.button_text').text(OGMO.lang('Save'));
+		btn_save_update.find('.button_text').text(OGMO.lang('Save & Update'));
+		btn_cancel.find('.button_text').text(OGMO.lang('Cancel'));
+
 		// close Window
-		root.find(".project_save").click(function(e) { saveAndClose(); });
+		btn_save.click(function(e) { saveAndClose(); });
 
-		root.find(".project_save_update").click(function(e) { saveAndClose(true); });
+		btn_save_update.click(function(e) { saveAndClose(true); });
 
-		root.find(".project_cancel").click(function(e)
+		btn_cancel.click(function(e)
 		{
 			Popup.open("Whoa", "warning", "Are you sure you want to cancel all changes?", ["Yes, Discard Changes", "No"], function(i) { if (i == 0) discardAndClose(); });
 		});

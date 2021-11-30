@@ -18,8 +18,8 @@ class StartPage
 		
 		new JQuery(".start_version").text(OGMO.version);
 
-		new JQuery(".start_newProject .button_text").text(OGMO.lang.lang('New Project'));
-		new JQuery(".start_openProject .button_text").text(OGMO.lang.lang('Open Project'));
+		new JQuery(".start_newProject .button_text").text(OGMO.lang('New Project'));
+		new JQuery(".start_openProject .button_text").text(OGMO.lang('Open Project'));
 
 		new JQuery(".start_newProject").click(function(e)
 		{
