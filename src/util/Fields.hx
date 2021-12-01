@@ -312,7 +312,7 @@ class Fields
 			element.val(path);
 			holder.append(element);
 	
-			var button = Fields.createButton("save", "Select", holder);
+			var button = Fields.createButton("save", OGMO.lang("Select"), holder);
 			button.on("click", function()
 			{
 				var chosenPath = FileSystem.chooseFile("Select File", filters);
@@ -324,7 +324,7 @@ class Fields
 	
 			if (clearable)
 			{
-				var clear = Fields.createButton("no", "Clear", holder);
+				var clear = Fields.createButton("no", OGMO.lang("Clear"), holder);
 				clear.on("click", function()
 				{
 					if (onClear != null) onClear();

@@ -95,7 +95,7 @@ class ProjectEntitiesPanel extends ProjectEditorPanel
 	{
 		Popup.openText("Create New Entity", "plus", "new entity", "Create", "Cancel", function(name)
 		{
-			if (name.length > 0 && name != null)
+			if (name != null && name.length > 0)
 			{
 				var entity = EntityTemplate.create(OGMO.project);
 				entity.name = name;

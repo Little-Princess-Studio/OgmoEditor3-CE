@@ -155,7 +155,7 @@ class Ogmo
 		
 		// Time update
 		{
-			var now = Date.now().getTime();
+			var now = js.lib.Date.now();
 			deltaTime = (now - lastTime) / 1000;
 			totalTime = (now - startTime) / 1000;
 			lastTime = now;

@@ -69,11 +69,11 @@ class ProjectLayersPanel extends ProjectEditorPanel
 
 		Popup.openTextDropdown("Create New Layer", "plus", "new_layer", layerOptions, "Create", "Cancel", function(name, index)
 		{
-			if (name != null && name.length > 0)
+			if (name != null && StringTools.trim(name).length > 0)
 			{
 				var definition = LayerDefinition.getDefinitionById(layerIds[index]);
 				var template = definition.createTemplate(OGMO.project);
-				template.name = name;
+				template.name = StringTools.trim(name);
 				OGMO.project.layers.push(template);
 				refreshList();
 				inspect(template);
@@ -117,7 +117,7 @@ class ProjectLayersPanel extends ProjectEditorPanel
 				menu.onClosed(function() { current.highlighted = false; });
 				menu.addOption("Delete Layer", "trash", function()
 				{
-					Popup.open("Delete Layer", "trash", "Permanently delete <span class='monospace'>" + current.data.name + "</span>?", ["Delete", "Cancel"], function(btn)
+					Popup.open("Delete Layer", "trash", "Permanently delete <span class='monospace'>" + current.data.name + "</span>?", [OGMO.lang("Delete"), OGMO.lang("Cancel")], function(btn)
 					{
 						if (btn == 0)
 						{

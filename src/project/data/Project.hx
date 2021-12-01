@@ -74,12 +74,12 @@ class Project
 
 	public function getNextLayerTemplateExportID():String
 	{
-		return Std.string(new Date().getTime()).substring(4, 8) + Std.string(Math.random()).substring(2, 6);
+		return Std.string(js.lib.Date.now()).substring(4, 8) + Std.string(Math.random()).substring(2, 6);
 	}
 
 	public function getNextEntityTemplateExportID():String
 	{
-		return Std.string(new Date().getTime()).substring(4, 8) + Std.string(Math.random()).substring(2, 6);
+		return Std.string(js.lib.Date.now()).substring(4, 8) + Std.string(Math.random()).substring(2, 6);
 	}
 
 	public function getNextUnsavedLevelID():Int
