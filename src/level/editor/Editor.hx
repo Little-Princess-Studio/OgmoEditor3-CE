@@ -228,7 +228,9 @@ class Editor
 			});
 
 			// Close Project Button
-			new JQuery('.close-project').click(function(e)
+			var closeBtn = new JQuery('.close-project');
+			closeBtn.attr({ title: OGMO.lang("Close Project") });
+			closeBtn.click(function(e)
 			{
 				EDITOR.levelManager.closeAll(function()
 				{
@@ -238,7 +240,9 @@ class Editor
 				});
 			});
 
-			new JQuery('.refresh-project').click(function(e)
+			var refreshBtn = new JQuery('.refresh-project');
+			refreshBtn.attr({ title: OGMO.lang("Refresh Project") });
+			refreshBtn.click(function(e)
 			{
 				setState();
 				
@@ -251,7 +255,9 @@ class Editor
 				});
 			});
 
-			new JQuery('.play-command').click(function(e)
+			var playBtn = new JQuery('.play-command');
+			playBtn.attr({ title: OGMO.lang("Play") });
+			playBtn.click(function(e)
 			{
 				if (OGMO.project.playCommand.length == 0)
 				{
