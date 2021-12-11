@@ -95,7 +95,7 @@ class ProjectGeneralPanel extends ProjectEditorPanel
 		Fields.setField(directoryDepth, OGMO.project.directoryDepth.string());
 		Fields.setColor(backgroundColor, OGMO.project.backgroundColor);
 		Fields.setColor(gridColor, OGMO.project.gridColor);
-		coordinateExport.val(OGMO.project.coordinate == Coordinate.LEFT_TOP ? '0' : '1');
+		coordinateExport.val(OGMO.project.coordinate == Coordinate.LEFT_BOTTOM ? '1' : '0');
 		compactExport.val(!OGMO.project.compactExport ? "0" : "1");
 		Fields.setPath(externalScript, OGMO.project.externalScript);
 		Fields.setField(playCommand, OGMO.project.playCommand);

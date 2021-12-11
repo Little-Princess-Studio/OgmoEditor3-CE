@@ -143,7 +143,7 @@ class Project
 	{
 		name = data.name;
 		levelPaths = data.levelPaths;
-		if (data.coordinate != null) coordinate = data.coordinate;
+		if (data.coordinate != null) coordinate = Type.createEnumIndex(Coordinate, data.coordinate);
 		backgroundColor = Color.fromHexAlpha(data.backgroundColor);
 		gridColor = Color.fromHexAlpha(data.gridColor);
 		anglesRadians = data.anglesRadians;
@@ -192,7 +192,7 @@ class Project
 		var data:ProjectSaveFile = {
 			name: name,
 			ogmoVersion : OGMO.version,
-			coordinate: coordinate,
+			coordinate: Type.enumIndex(coordinate),
 			levelPaths: levelPaths,
 			backgroundColor: backgroundColor.toHexAlpha(),
 			gridColor: gridColor.toHexAlpha(),
@@ -240,7 +240,7 @@ typedef ProjectSaveFile =
 	name:String,
 	ogmoVersion:String,
 	levelPaths:Array<String>,
-	coordinate: Coordinate,
+	coordinate:Int,
 	backgroundColor:String,
 	gridColor:String,
 	anglesRadians:Bool,
