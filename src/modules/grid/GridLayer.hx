@@ -2,6 +2,7 @@ package modules.grid;
 
 import level.data.Level;
 import level.data.Layer;
+import util.Coordinate;
 
 class GridLayer extends Layer
 {
@@ -34,12 +35,18 @@ class GridLayer extends Layer
 		{
 			data._contents = "grid";
 			var flippedData = flip2dArray(this.data);
+			if (OGMO.project.coordinate == Coordinate.LEFT_BOTTOM) {
+				flippedData = inverse2dArray(flippedData);
+			}
 			data.grid = [for(row in flippedData) for (i in row) i];
 		}
 		else if (template.arrayMode == TWO)
 		{
 			data._contents = "grid2D";
 			data.grid2D = flip2dArray(this.data);
+			if (OGMO.project.coordinate == Coordinate.LEFT_BOTTOM) {
+				data.grid2D = inverse2dArray(data.grid2D);
+			}
 		}
 		else throw "Invalid Tile Layer Array Mode: " + template.arrayMode;
 
@@ -65,9 +72,18 @@ class GridLayer extends Layer
 				var y = (i / gridCellsX).int();
 				this.data[x][y] = content[i];
 			}
+
+			if (coordinate == Coordinate.LEFT_BOTTOM) {
+				this.data = flip2dArray(this.data);
+				this.data = inverse2dArray(this.data);
+				this.data = flip2dArray(this.data);
+			}
 		}
 		else if (arrayMode == TWO)
 		{
+			if (coordinate == Coordinate.LEFT_BOTTOM) {
+				data.grid2D = inverse2dArray(data.grid2D);
+			}
 			this.data = flip2dArray(data.grid2D);
 		}
 		else throw "Invalid Tile Layer Array Mode: " + arrayMode;
@@ -268,4 +284,11 @@ class GridLayer extends Layer
 		return flipped;
 	}
 
+	function inverse2dArray(arr:Array<Array<String>>):Array<Array<String>>
+	{
+		var inversed:Array<Array<String>> = arr.copy();
+		inversed.reverse();
+
+		return inversed;
+	}
 }
