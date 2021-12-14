@@ -1,5 +1,6 @@
 package project.data;
 
+import js.html.Console;
 import io.FileSystem;
 import js.Browser;
 import js.node.Path;
@@ -92,6 +93,26 @@ class Tileset
 			marginY = data.tileMarginY;
 
 		return new Tileset(project, data.label, data.path, data.tileWidth, data.tileHeight, data.tileSeparationX, data.tileSeparationY, marginX, marginY);
+	}
+
+	public inline function inverseId(id: Int):Int {
+		if (id < 0) {
+			return id;
+		}
+
+		var tileX = getTileX(id);
+		var tileY = getTileY(id);
+
+		return Math.floor(tileX + (tileRows - tileY - 1) * tileColumns);
+	}
+
+	public inline function getInverseTileY(id: Int): Int {
+		if (id < 0) {
+			return id;
+		}
+
+		Console.log('tileRows:', tileRows, 'id:', id, 'tileX:', getTileX(id), 'tileY:', getTileY(id));
+		return tileRows - getTileY(id) - 1;
 	}
 
 	public inline function getTileX(id: Int):Int return id % tileColumns;

@@ -1,8 +1,10 @@
 package modules.tiles;
 
+import js.html.Console;
 import level.data.Level;
 import project.data.Tileset;
 import level.data.Layer;
+import util.Coordinate;
 
 enum TileRotation
 {
@@ -173,6 +175,14 @@ class TileLayer extends Layer
 		var template:TileLayerTemplate = cast this.template;
 		var flippedData = flip2dArray(this.data);
 
+		var isLeftBottom = OGMO.project.coordinate == Coordinate.LEFT_BOTTOM;
+
+		if (isLeftBottom) {
+			flippedData = inverse2dArray(flippedData);
+		}
+
+		Console.log('tileColumns:', tileset.tileColumns, 'tileRows:', tileset.tileRows);
+
 		if (tileset != null) data.tileset = tileset.label;
 		else data.tileset = "";
 
@@ -181,13 +191,13 @@ class TileLayer extends Layer
 			if(template.arrayMode == ONE)
 			{
 				data._contents = "data";
-				data.data = [for (column in flippedData) for (tile in column) tile.idx];
+				data.data = [for (column in flippedData) for (tile in column) isLeftBottom ? tileset.inverseId(tile.idx) : tile.idx];
 			}
 			else if (template.arrayMode == TWO)
 			{
 				data._contents = "data2D";
 				data.data2D = Calc.createArray2D(gridCellsY, gridCellsX, TileData.EMPTY_TILE);
-				for (x in 0...flippedData.length) for (y in 0...flippedData[x].length) data.data2D[x][y] = flippedData[x][y].idx;
+				for (x in 0...flippedData.length) for (y in 0...flippedData[x].length) data.data2D[x][y] = isLeftBottom ? tileset.inverseId(flippedData[x][y].idx) : flippedData[x][y].idx;
 			}
 			else throw "Invalid Tile Layer Array Mode: " + template.arrayMode;
 		}
@@ -196,7 +206,7 @@ class TileLayer extends Layer
 			if(template.arrayMode == ONE)
 			{
 				data._contents = "dataCoords";
-				data.dataCoords = [for(column in flippedData) for (tile in column) tile.isEmptyTile() ? [TileData.EMPTY_TILE] : [tileset.getTileX(tile.idx), tileset.getTileY(tile.idx)]];
+				data.dataCoords = [for(column in flippedData) for (tile in column) tile.isEmptyTile() ? [TileData.EMPTY_TILE] : [tileset.getTileX(tile.idx), isLeftBottom ? tileset.getInverseTileY(tile.idx) : tileset.getTileY(tile.idx)]];
 			}
 			else if (template.arrayMode == TWO)
 			{
@@ -207,7 +217,7 @@ class TileLayer extends Layer
 					for (x in 0...flippedData[y].length)
 					{
 						var tile = flippedData[y][x];
-						arr[y][x] = tile.isEmptyTile() ? [TileData.EMPTY_TILE] : [tileset.getTileX(tile.idx), tileset.getTileY(tile.idx)];
+						arr[y][x] = tile.isEmptyTile() ? [TileData.EMPTY_TILE] : [tileset.getTileX(tile.idx), isLeftBottom ? tileset.getInverseTileY(tile.idx) : tileset.getTileY(tile.idx)];
 					}
 				}
 				data._contents = "dataCoords2D";
@@ -254,6 +264,8 @@ class TileLayer extends Layer
 	{
 		super.load(data);
 
+		var isLeftBottom = coordinate == Coordinate.LEFT_BOTTOM;
+
 		tileset = OGMO.project.getTileset(data.tileset);
 		if (tileset == null && template != null) tileset = OGMO.project.getTileset((cast template : TileLayerTemplate).defaultTileset);
 
@@ -271,7 +283,7 @@ class TileLayer extends Layer
 				{
 					var x = i % gridCellsX;
 					var y = (i / gridCellsX).int();
-					this.data[y][x].idx = content[i];
+					this.data[y][x].idx = isLeftBottom && tileset != null ? tileset.inverseId(content[i]) : content[i];
 				}
 			}
 			else if (arrayMode == TWO)
@@ -279,7 +291,7 @@ class TileLayer extends Layer
 				var content:Array<Array<Int>> = data.data2D;
 				for (y in 0...content.length)
 					for (x in 0...content[y].length)
-						this.data[y][x].idx = content[y][x];
+						this.data[y][x].idx = isLeftBottom && tileset != null ? tileset.inverseId(content[y][x]) : content[y][x];
 			}
 			else throw "Invalid Tile Layer Array Mode: " + arrayMode;
 		}
@@ -293,7 +305,7 @@ class TileLayer extends Layer
 					var x = i % gridCellsX;
 					var y = (i / gridCellsX).int();
 					if (content[i][0] == TileData.EMPTY_TILE) this.data[y][x].idx = TileData.EMPTY_TILE;
-					else this.data[y][x].idx = tileset.coordsToID(content[i][0], content[i][1]);
+					else this.data[y][x].idx = tileset.coordsToID(content[i][0], isLeftBottom && tileset != null ? (tileset.tileRows - content[i][1] - 1) : content[i][1]);
 				}
 			}
 			else if (arrayMode == TWO)
@@ -304,7 +316,7 @@ class TileLayer extends Layer
 					for (x in 0...content[y].length)
 					{
 						if (content[y][x][0] == TileData.EMPTY_TILE) this.data[y][x].idx = TileData.EMPTY_TILE;
-						else this.data[y][x].idx = tileset.coordsToID(content[y][x][0], content[y][x][1]);
+						else this.data[y][x].idx = tileset.coordsToID(content[y][x][0], isLeftBottom && tileset != null ? (tileset.tileRows - content[y][x][1] - 1) : content[y][x][1]);
 					}
 				}
 			}
@@ -328,6 +340,10 @@ class TileLayer extends Layer
 			for (y in 0...content.length)
 				for (x in 0...content[y].length)
 					this.data[y][x].decodeFlags(content[y][x]);
+		}
+
+		if (isLeftBottom) {
+			this.data = inverse2dArray(this.data);
 		}
 
 		this.data = flip2dArray(this.data);
@@ -510,5 +526,13 @@ class TileLayer extends Layer
 			}
 		}
 		return flipped;
+	}
+
+	function inverse2dArray(arr:Array<Array<TileData>>):Array<Array<TileData>>
+	{
+		var inversed:Array<Array<TileData>> = arr.copy();
+		inversed.reverse();
+
+		return inversed;
 	}
 }
