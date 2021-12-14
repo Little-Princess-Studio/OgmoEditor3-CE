@@ -38,9 +38,9 @@ class Tileset
 		this.tileMarginX = tileMargX;
 		this.tileMarginY = tileMargY;
 
-		if (FileSystem.exists(Path.join(Path.dirname(project.path), path)))
+		if (FileSystem.exists(Path.resolve(Path.dirname(project.path), path)))
 		{
-			texture = Texture.fromFile(Path.join(Path.dirname(project.path), path));
+			texture = Texture.fromFile(Path.resolve(Path.dirname(project.path), path));
 		}
 		else if (image != null)
 		{
