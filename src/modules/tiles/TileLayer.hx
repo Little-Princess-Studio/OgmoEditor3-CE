@@ -305,7 +305,7 @@ class TileLayer extends Layer
 					var x = i % gridCellsX;
 					var y = (i / gridCellsX).int();
 					if (content[i][0] == TileData.EMPTY_TILE) this.data[y][x].idx = TileData.EMPTY_TILE;
-					else this.data[y][x].idx = tileset.coordsToID(content[i][0], isLeftBottom && tileset != null ? (tileset.tileRows - content[i][1] - 1) : content[i][1]);
+					else this.data[y][x].idx = tileset.coordsToID(content[i][0], content[i][1]);
 				}
 			}
 			else if (arrayMode == TWO)
@@ -316,7 +316,7 @@ class TileLayer extends Layer
 					for (x in 0...content[y].length)
 					{
 						if (content[y][x][0] == TileData.EMPTY_TILE) this.data[y][x].idx = TileData.EMPTY_TILE;
-						else this.data[y][x].idx = tileset.coordsToID(content[y][x][0], isLeftBottom && tileset != null ? (tileset.tileRows - content[y][x][1] - 1) : content[y][x][1]);
+						else this.data[y][x].idx = tileset.coordsToID(content[y][x][0], content[y][x][1]);
 					}
 				}
 			}
