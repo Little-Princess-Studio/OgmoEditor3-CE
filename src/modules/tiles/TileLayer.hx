@@ -191,13 +191,13 @@ class TileLayer extends Layer
 			if(template.arrayMode == ONE)
 			{
 				data._contents = "data";
-				data.data = [for (column in flippedData) for (tile in column) isLeftBottom ? tileset.inverseId(tile.idx) : tile.idx];
+				data.data = [for (column in flippedData) for (tile in column) tile.idx];
 			}
 			else if (template.arrayMode == TWO)
 			{
 				data._contents = "data2D";
 				data.data2D = Calc.createArray2D(gridCellsY, gridCellsX, TileData.EMPTY_TILE);
-				for (x in 0...flippedData.length) for (y in 0...flippedData[x].length) data.data2D[x][y] = isLeftBottom ? tileset.inverseId(flippedData[x][y].idx) : flippedData[x][y].idx;
+				for (x in 0...flippedData.length) for (y in 0...flippedData[x].length) data.data2D[x][y] = flippedData[x][y].idx;
 			}
 			else throw "Invalid Tile Layer Array Mode: " + template.arrayMode;
 		}
@@ -206,7 +206,7 @@ class TileLayer extends Layer
 			if(template.arrayMode == ONE)
 			{
 				data._contents = "dataCoords";
-				data.dataCoords = [for(column in flippedData) for (tile in column) tile.isEmptyTile() ? [TileData.EMPTY_TILE] : [tileset.getTileX(tile.idx), isLeftBottom ? tileset.getInverseTileY(tile.idx) : tileset.getTileY(tile.idx)]];
+				data.dataCoords = [for(column in flippedData) for (tile in column) tile.isEmptyTile() ? [TileData.EMPTY_TILE] : [tileset.getTileX(tile.idx), tileset.getTileY(tile.idx)]];
 			}
 			else if (template.arrayMode == TWO)
 			{
@@ -217,7 +217,7 @@ class TileLayer extends Layer
 					for (x in 0...flippedData[y].length)
 					{
 						var tile = flippedData[y][x];
-						arr[y][x] = tile.isEmptyTile() ? [TileData.EMPTY_TILE] : [tileset.getTileX(tile.idx), isLeftBottom ? tileset.getInverseTileY(tile.idx) : tileset.getTileY(tile.idx)];
+						arr[y][x] = tile.isEmptyTile() ? [TileData.EMPTY_TILE] : [tileset.getTileX(tile.idx), tileset.getTileY(tile.idx)];
 					}
 				}
 				data._contents = "dataCoords2D";
@@ -283,7 +283,7 @@ class TileLayer extends Layer
 				{
 					var x = i % gridCellsX;
 					var y = (i / gridCellsX).int();
-					this.data[y][x].idx = isLeftBottom && tileset != null ? tileset.inverseId(content[i]) : content[i];
+					this.data[y][x].idx = content[i];
 				}
 			}
 			else if (arrayMode == TWO)
@@ -291,7 +291,7 @@ class TileLayer extends Layer
 				var content:Array<Array<Int>> = data.data2D;
 				for (y in 0...content.length)
 					for (x in 0...content[y].length)
-						this.data[y][x].idx = isLeftBottom && tileset != null ? tileset.inverseId(content[y][x]) : content[y][x];
+						this.data[y][x].idx = content[y][x];
 			}
 			else throw "Invalid Tile Layer Array Mode: " + arrayMode;
 		}
