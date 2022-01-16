@@ -1,5 +1,6 @@
 package level.data;
 
+import modules.tiles.TileLayer;
 import js.Browser;
 import util.Popup;
 import electron.renderer.Remote;
@@ -91,9 +92,16 @@ class Level
 			var eid = layers[i]._eid;
 			if (eid != null)
 			{
+				var tileset = layers[i].tileset;
 				var layer = getLayerByExportID(eid);
-				if (layer != null)
+				if (layer != null) {
+					if (tileset != null && (cast layer : TileLayer).tileset != null && (cast layer : TileLayer).tileset.label != tileset) {
+						// clear tileset
+						layers[i].tileset = (cast layer : TileLayer).tileset.label;
+						layers[i].data = [];
+					}
 					layer.load(layers[i]);
+				}
 			}
 		}
 
