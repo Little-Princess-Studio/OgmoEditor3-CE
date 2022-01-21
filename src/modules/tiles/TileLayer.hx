@@ -1,8 +1,10 @@
 package modules.tiles;
 
+import js.html.Console;
 import level.data.Level;
 import project.data.Tileset;
 import level.data.Layer;
+import util.Coordinate;
 
 enum TileRotation
 {
@@ -173,6 +175,14 @@ class TileLayer extends Layer
 		var template:TileLayerTemplate = cast this.template;
 		var flippedData = flip2dArray(this.data);
 
+		var isLeftBottom = OGMO.project.coordinate == Coordinate.LEFT_BOTTOM;
+
+		if (isLeftBottom) {
+			flippedData = inverse2dArray(flippedData);
+		}
+
+		Console.log('tileColumns:', tileset.tileColumns, 'tileRows:', tileset.tileRows);
+
 		if (tileset != null) data.tileset = tileset.label;
 		else data.tileset = "";
 
@@ -254,6 +264,8 @@ class TileLayer extends Layer
 	{
 		super.load(data);
 
+		var isLeftBottom = coordinate == Coordinate.LEFT_BOTTOM;
+
 		tileset = OGMO.project.getTileset(data.tileset);
 		if (tileset == null && template != null) tileset = OGMO.project.getTileset((cast template : TileLayerTemplate).defaultTileset);
 
@@ -328,6 +340,10 @@ class TileLayer extends Layer
 			for (y in 0...content.length)
 				for (x in 0...content[y].length)
 					this.data[y][x].decodeFlags(content[y][x]);
+		}
+
+		if (isLeftBottom) {
+			this.data = inverse2dArray(this.data);
 		}
 
 		this.data = flip2dArray(this.data);
@@ -510,5 +526,13 @@ class TileLayer extends Layer
 			}
 		}
 		return flipped;
+	}
+
+	function inverse2dArray(arr:Array<Array<TileData>>):Array<Array<TileData>>
+	{
+		var inversed:Array<Array<TileData>> = arr.copy();
+		inversed.reverse();
+
+		return inversed;
 	}
 }

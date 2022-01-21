@@ -67,9 +67,15 @@ class FilepathData
 		// data.path = str.substring(projPrefix.length, str.length);
 
 		var pathArr = str.split(':');
-		var relativeTo = pathArr[0];
-		var path = pathArr[1];
-		var index = pathArr[2];
+		var relativeTo = '/';
+		var path = '';
+		var index = '0';
+
+		if (pathArr.length > 3) {
+			relativeTo = pathArr[0];
+			index = pathArr[pathArr.length - 1];
+			path = str.substring(relativeTo.length + 1, str.length - index.length - 1);
+		}
 
 		data.relativeTo = relativeTo;
 		data.path = path;

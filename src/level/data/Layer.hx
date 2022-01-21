@@ -1,6 +1,7 @@
 package level.data;
 
 import io.Imports;
+import util.Coordinate;
 import util.Vector;
 import util.Rectangle;
 import project.data.LayerTemplate;
@@ -10,6 +11,7 @@ class Layer
 	public var level:Level;
 	public var id:Int;
 	public var offset:Vector;
+	public var coordinate:Coordinate = Coordinate.LEFT_TOP;
 	public var template(get, never):LayerTemplate;
 	public var gridCellsX(get, never):Int;
 	public var gridCellsY(get, never):Int;
@@ -52,6 +54,7 @@ class Layer
 		template.gridSize.saveInto(data, "gridCellWidth", "gridCellHeight");
 		data.gridCellsX = gridCellsX;
 		data.gridCellsY = gridCellsY;
+		data.coordinate = Type.enumIndex(OGMO.project.coordinate);
 
 		return data;
 	}
@@ -59,6 +62,8 @@ class Layer
 	public function load(data: Dynamic):Void
 	{
 		offset = Imports.vector(data, "offsetX", "offsetY");
+
+		if (data.coordinate != null) coordinate = Type.createEnumIndex(Coordinate, data.coordinate);
 	}
 
 	/*

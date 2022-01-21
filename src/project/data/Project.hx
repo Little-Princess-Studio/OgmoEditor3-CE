@@ -10,6 +10,7 @@ import modules.entities.EntityTemplate;
 import modules.entities.EntityTemplateList;
 import util.Color;
 import util.Vector;
+import util.Coordinate;
 
 class Project
 {
@@ -24,6 +25,7 @@ class Project
 	public var playCommand:String;
 	public var directoryDepth:Int = 5;
 	public var layerGridDefaultSize = new Vector(8, 8);
+	public var coordinate:Coordinate = Coordinate.LEFT_TOP;
 
 	public var levelDefaultSize:Vector = new Vector(320, 240);
 	public var levelMinSize:Vector = new Vector(128, 128);
@@ -141,6 +143,7 @@ class Project
 	{
 		name = data.name;
 		levelPaths = data.levelPaths;
+		if (data.coordinate != null) coordinate = Type.createEnumIndex(Coordinate, data.coordinate);
 		backgroundColor = Color.fromHexAlpha(data.backgroundColor);
 		gridColor = Color.fromHexAlpha(data.gridColor);
 		anglesRadians = data.anglesRadians;
@@ -189,6 +192,7 @@ class Project
 		var data:ProjectSaveFile = {
 			name: name,
 			ogmoVersion : OGMO.version,
+			coordinate: Type.enumIndex(coordinate),
 			levelPaths: levelPaths,
 			backgroundColor: backgroundColor.toHexAlpha(),
 			gridColor: gridColor.toHexAlpha(),
@@ -236,6 +240,7 @@ typedef ProjectSaveFile =
 	name:String,
 	ogmoVersion:String,
 	levelPaths:Array<String>,
+	coordinate:Int,
 	backgroundColor:String,
 	gridColor:String,
 	anglesRadians:Bool,

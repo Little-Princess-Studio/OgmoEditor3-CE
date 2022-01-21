@@ -287,8 +287,8 @@ class TilePalettePanel extends SidePanel
 				return;
 			}
 
-			context.fillStyle = "rgb(220, 220, 220)";
-			context.fillRect(0, 0, canvas.width, canvas.height);
+			// context.fillStyle = "rgb(220, 220, 220)";
+			// context.fillRect(0, 0, canvas.width, canvas.height);
 
 			// draw tiles (+transparent bg)
 			context.fillStyle = "rgb(200,200,200)";

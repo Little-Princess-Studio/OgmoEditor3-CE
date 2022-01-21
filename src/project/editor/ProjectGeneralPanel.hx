@@ -3,6 +3,7 @@ package project.editor;
 import js.jquery.JQuery;
 import util.Vector;
 import util.Color;
+import util.Coordinate;
 import util.Fields;
 
 class ProjectGeneralPanel extends ProjectEditorPanel
@@ -12,6 +13,7 @@ class ProjectGeneralPanel extends ProjectEditorPanel
 		Ogmo.projectEditor.addPanel(new ProjectGeneralPanel());
 	}
 
+	public var coordinateExport:JQuery;
 	public var projectName:JQuery;
 	public var backgroundColor:JQuery;
 	public var externalScript:JQuery;
@@ -31,7 +33,13 @@ class ProjectGeneralPanel extends ProjectEditorPanel
 		// general settings
 
 		projectName = Fields.createField("Project Name");
-		Fields.createSettingsBlock(root, projectName, SettingsBlock.TwoThirds, "Name", SettingsBlock.InlineTitle);
+		Fields.createSettingsBlock(root, projectName, SettingsBlock.Third, "Name", SettingsBlock.InlineTitle);
+
+		var coordinateOpts = new Map();
+		coordinateOpts.set('0', 'left top');
+		coordinateOpts.set('1', 'left bottom');
+		coordinateExport = Fields.createOptions(coordinateOpts);
+		Fields.createSettingsBlock(root, coordinateExport, SettingsBlock.Third, "Coordinate", SettingsBlock.InlineTitle);
 
 		directoryDepth = Fields.createField("00", "5");
 		Fields.createSettingsBlock(root, directoryDepth, SettingsBlock.Third, "Project Directory Depth", SettingsBlock.InlineTitle);
@@ -87,6 +95,7 @@ class ProjectGeneralPanel extends ProjectEditorPanel
 		Fields.setField(directoryDepth, OGMO.project.directoryDepth.string());
 		Fields.setColor(backgroundColor, OGMO.project.backgroundColor);
 		Fields.setColor(gridColor, OGMO.project.gridColor);
+		coordinateExport.val(OGMO.project.coordinate == Coordinate.LEFT_BOTTOM ? '1' : '0');
 		compactExport.val(!OGMO.project.compactExport ? "0" : "1");
 		Fields.setPath(externalScript, OGMO.project.externalScript);
 		Fields.setField(playCommand, OGMO.project.playCommand);
@@ -105,6 +114,7 @@ class ProjectGeneralPanel extends ProjectEditorPanel
 		OGMO.project.directoryDepth = Imports.integer(Fields.getField(directoryDepth), 16);
 		OGMO.project.backgroundColor = Fields.getColor(backgroundColor);
 		OGMO.project.gridColor = Fields.getColor(gridColor);
+		OGMO.project.coordinate = coordinateExport.val() == '0' ? Coordinate.LEFT_TOP : Coordinate.LEFT_BOTTOM;
 		OGMO.project.compactExport = compactExport.val() != "0";
 		OGMO.project.externalScript = Fields.getPath(externalScript);
 		OGMO.project.playCommand = Fields.getField(playCommand);

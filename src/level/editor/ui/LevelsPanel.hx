@@ -90,7 +90,7 @@ class LevelsPanel extends SidePanel
 
 						item_count++;
 					}
-					else if (stats.isFile() && path != OGMO.project.path)
+					else if (stats.isFile() && path != OGMO.project.path && Path.extname(path) != '.meta')
 					{
 						// Add File
 						parent.children.push({

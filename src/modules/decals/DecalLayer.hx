@@ -3,6 +3,7 @@ package modules.decals;
 import rendering.Texture;
 import js.node.Path;
 import level.data.Layer;
+import util.Coordinate;
 
 class DecalLayer extends Layer
 {
@@ -15,6 +16,15 @@ class DecalLayer extends Layer
 		data.decals = [];
 		for (decal in decals) data.decals.push(decal.save((cast template : DecalLayerTemplate).scaleable, (cast template : DecalLayerTemplate).rotatable));
 		data.folder = (cast template : DecalLayerTemplate).folder;
+
+		if (OGMO.project.coordinate == Coordinate.LEFT_BOTTOM && EDITOR.level != null) {
+			var y = EDITOR.level.data.size.y;
+
+			for(i in 0...data.decals.length) {
+				var decalSaveData:Dynamic = data.decals[i];
+				decalSaveData.y = y - decalSaveData.y;
+			}
+		}
 
 		return data;
 	}
@@ -29,6 +39,10 @@ class DecalLayer extends Layer
 		{
 			
 			var position = Imports.vector(decal, "x", "y");
+			if (coordinate == Coordinate.LEFT_BOTTOM && EDITOR.level != null) {
+				var y = EDITOR.level.data.size.y;
+				position.y = y - position.y;
+			}
 			var path = haxe.io.Path.normalize(decal.texture);
 			var relative = Path.join((cast template : DecalLayerTemplate).folder, path);
 			var texture:Texture = null;
