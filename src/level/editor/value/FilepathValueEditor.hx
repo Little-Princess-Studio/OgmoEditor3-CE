@@ -3,7 +3,7 @@ package level.editor.value;
 import js.html.Console;
 import js.Browser;
 import project.data.ValueDefinition;
-import project.data.value.FilePathValueTemplate;
+import project.data.value.FilepathValueTemplate;
 import js.node.Path;
 import level.data.FilepathData;
 import level.data.Value;
@@ -11,14 +11,14 @@ import project.data.value.ValueTemplate;
 import js.jquery.JQuery;
 import util.Fields;
 
-class FilePathValueEditor extends ValueEditor
+class FilepathValueEditor extends ValueEditor
 {
 	public var title:String;
 	public var holder:JQuery = null;
 	public var element:JQuery = null;
 	public var baseButton:JQuery = null;
 	public var selectButton:JQuery = null;
-	public var pathTemplate:FilePathValueTemplate;
+	public var pathTemplate:FilepathValueTemplate;
 	private var suggestFilesCache: Map<String, Array<String>> = new Map();
 
 	function initSuggestFilesCache(projectpath: String, roots: Array<String>, extensions: Array<String>) {

@@ -171,7 +171,7 @@ class FloatingHTMLPropertyDisplay extends FloatingHTML
                     htmlString += '<p class="value_color" style="background-color: ${val.value};">&nbsp;</p>';
                 else if (val.template.definition.type == EnumValueTemplate)
                     htmlString += '<p>• ${val.value}</p>';
-                else if (val.template.definition.type == FilePathValueTemplate)
+                else if (val.template.definition.type == FilepathValueTemplate)
                     htmlString += '<p>[${val.value}]</p>';
                 else if (val.template.definition.type == FloatValueTemplate)
                     htmlString += '<p>${val.value}</p>';
@@ -193,7 +193,7 @@ class FloatingHTMLPropertyDisplay extends FloatingHTML
                     htmlString += '<p>${val.template.name} = <span class="value_color" style="background-color: ${val.value}; display: inline-block;">&nbsp;</span></p>';
                 else if (val.template.definition.type == EnumValueTemplate)
                     htmlString += '<p>${val.template.name} = • ${val.value}</p>';
-                else if (val.template.definition.type == FilePathValueTemplate)
+                else if (val.template.definition.type == FilepathValueTemplate)
                     htmlString += '<p>${val.template.name} = [${val.value}]</p>';
                 else if (val.template.definition.type == FloatValueTemplate)
                     htmlString += '<p>${val.template.name} = ${val.value}</p>';

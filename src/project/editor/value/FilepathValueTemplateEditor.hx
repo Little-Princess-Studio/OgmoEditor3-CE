@@ -6,11 +6,11 @@ import js.node.Path;
 import js.html.Console;
 import haxe.macro.Expr.Field;
 import js.jquery.JQuery;
-import project.data.value.FilePathValueTemplate;
+import project.data.value.FilepathValueTemplate;
 import util.Fields;
 import io.FileSystem;
 
-class FilePathValueTemplateEditor extends ValueTemplateEditor
+class FilepathValueTemplateEditor extends ValueTemplateEditor
 {
 	public var defaultField:JQuery;
 	public var extensionsField:JQuery;
@@ -21,7 +21,7 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 
 	override function importInto(into:JQuery)
 	{
-		var pathTemplate:FilePathValueTemplate = cast template;
+		var pathTemplate:FilepathValueTemplate = cast template;
 		defaults = pathTemplate.defaults;
 
 		// default val
@@ -103,7 +103,7 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 	}
 
 	function refreshSuggestList(value: String) {
-		var pathTemplate:FilePathValueTemplate = cast template;
+		var pathTemplate:FilepathValueTemplate = cast template;
 		var suggestList = directoryCache.get(pathTemplate.projectpath);
 
 		var holder = defaultField.find('.auto-complete-holder');
@@ -122,7 +122,7 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 
 	function refreshDirectoryCache()
 	{
-		var pathTemplate:FilePathValueTemplate = cast template;
+		var pathTemplate:FilepathValueTemplate = cast template;
 		var projectpath = pathTemplate.projectpath;
 		var extensions = pathTemplate.extensions.map(it -> {
 			// add '.' character
@@ -160,7 +160,7 @@ class FilePathValueTemplateEditor extends ValueTemplateEditor
 
 	override function save()
 	{
-		var pathTemplate:FilePathValueTemplate = cast template;
+		var pathTemplate:FilepathValueTemplate = cast template;
 
 		pathTemplate.defaults = Fields.getFilepathData(defaultField);
 

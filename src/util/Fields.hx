@@ -1,6 +1,6 @@
 package util;
 
-import project.data.value.FilePathValueTemplate;
+import project.data.value.FilepathValueTemplate;
 import js.html.Console;
 import js.node.Path;
 import io.FileSystem;
@@ -347,7 +347,7 @@ class Fields
 		return element.find("input").val();
 	}
 
-	public static function createFilepathData(path:FilepathData, pathTemplate: FilePathValueTemplate, roots:Array<String>, filters:Array<electron.FileFilter>, ?into:JQuery):JQuery
+	public static function createFilepathData(path:FilepathData, pathTemplate: FilepathValueTemplate, roots:Array<String>, filters:Array<electron.FileFilter>, ?into:JQuery):JQuery
 	{
 		var holder = new JQuery('<div class="filepath">');
 

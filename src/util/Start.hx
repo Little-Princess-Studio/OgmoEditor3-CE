@@ -16,7 +16,7 @@ class Start {
 		BoolValueTemplate.startup();
 		ColorValueTemplate.startup();
 		EnumValueTemplate.startup();
-		FilePathValueTemplate.startup();
+		FilepathValueTemplate.startup();
 		FloatValueTemplate.startup();
 		IntegerValueTemplate.startup();
 		StringValueTemplate.startup();

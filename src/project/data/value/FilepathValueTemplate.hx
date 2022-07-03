@@ -1,16 +1,16 @@
 package project.data.value;
 
 import level.data.FilepathData;
-import project.editor.value.FilePathValueTemplateEditor;
-import level.editor.value.FilePathValueEditor;
+import project.editor.value.FilepathValueTemplateEditor;
+import level.editor.value.FilepathValueEditor;
 import level.editor.value.ValueEditor;
 import level.data.Value;
 
-class FilePathValueTemplate extends ValueTemplate
+class FilepathValueTemplate extends ValueTemplate
 {
 	public static function startup()
 	{
-		var n = new ValueDefinition(FilePathValueTemplate, FilePathValueTemplateEditor, "folder-open", "Filepath");
+		var n = new ValueDefinition(FilepathValueTemplate, FilepathValueTemplateEditor, "folder-open", "Filepath");
 		ValueDefinition.definitions.push(n);
 	}
 	public var defaults:FilepathData = new FilepathData();
@@ -45,7 +45,7 @@ class FilePathValueTemplate extends ValueTemplate
 
 	override function createEditor(values:Array<Value>):ValueEditor
 	{
-		var editor = new FilePathValueEditor();
+		var editor = new FilepathValueEditor();
 		editor.load(this, values);
 		return editor;
 	}
