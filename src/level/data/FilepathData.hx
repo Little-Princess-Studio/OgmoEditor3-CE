@@ -64,9 +64,6 @@ class FilepathData
 			data.path = str;
 		}
 
-		data.relativeTo = RelativeTo.PROJECT;
-		data.path = str.substring(projPrefix.length, str.length);
-
 		return data;
 	}
 
@@ -111,7 +108,6 @@ class FilepathData
 				if (validPath(path))
 					return path;
 		}
-
 		return null;
 	}
 
