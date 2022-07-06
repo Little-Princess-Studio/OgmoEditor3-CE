@@ -2,23 +2,21 @@ package level.data;
 
 import haxe.io.Path;
 
-// enum RelativeTo
-// {
-// 	PROJECT;
-// 	LEVEL;
-// }
+enum RelativeTo
+{
+	PROJECT;
+	LEVEL;
+}
 
 class FilepathData
 {
-	public var relativeTo:String;
+	public var relativeTo:RelativeTo;
 	public var path:String;
-	public var index:Int;
 
-	public function new(path:String = "", relativeTo:String = '/')
+	public function new(path:String = "", relativeTo:RelativeTo = RelativeTo.PROJECT)
 	{
 		this.path = path;
 		this.relativeTo = relativeTo;
-		this.index = 0;
 	}
 
 	public function clone():FilepathData
@@ -28,86 +26,59 @@ class FilepathData
 
 	public function asString():String
 	{
-		// var prefix = "";
-		// switch (relativeTo)
-		// {
-		// 	case PROJECT:
-		// 		prefix = "proj";
-		// 	case LEVEL:
-		// 		prefix = "lvl";
-		// }
-		var prefix = relativeTo;
-		return prefix + ":" + path + ":" + index.string();
+		var prefix = "";
+		switch (relativeTo)
+		{
+			case PROJECT:
+				prefix = "proj";
+			case LEVEL:
+				prefix = "lvl";
+		}
+
+		if (path != null && path.length > 0) {
+			return prefix + ':' + path;
+		}
+		return '';
 	}
 
 	public static function parseString(str:String):FilepathData
 	{
 		var data = new FilepathData();
 
-		// var projPrefix = "proj:";
-		// var lvlPrefix = "lvl:";
+		var projPrefix = "proj:";
+		var lvlPrefix = "lvl:";
 
-		// if (str.length >= projPrefix.length && str.substr(0, projPrefix.length) == projPrefix)
-		// {
-		// 	data.relativeTo = RelativeTo.PROJECT;
-		// 	data.path = str.substring(projPrefix.length, str.length);
-		// }
-		// else if (str.length >= lvlPrefix.length && str.substr(0, lvlPrefix.length) == lvlPrefix)
-		// {
-		// 	data.relativeTo = RelativeTo.LEVEL;
-		// 	data.path = str.substring(lvlPrefix.length, str.length);
-		// }
-		// else
-		// {
-		// 	data.relativeTo = RelativeTo.PROJECT;
-		// 	data.path = str;
-		// }
-
-		// data.relativeTo = RelativeTo.PROJECT;
-		// data.path = str.substring(projPrefix.length, str.length);
-
-		var pathArr = str.split(':');
-		var relativeTo = '/';
-		var path = '';
-		var index = '0';
-
-		if (pathArr.length > 3) {
-			relativeTo = pathArr[0];
-			index = pathArr[pathArr.length - 1];
-			path = str.substring(relativeTo.length + 1, str.length - index.length - 1);
+		if (str.length >= projPrefix.length && str.substr(0, projPrefix.length) == projPrefix)
+		{
+			data.relativeTo = RelativeTo.PROJECT;
+			data.path = str.substring(projPrefix.length, str.length);
+		}
+		else if (str.length >= lvlPrefix.length && str.substr(0, lvlPrefix.length) == lvlPrefix)
+		{
+			data.relativeTo = RelativeTo.LEVEL;
+			data.path = str.substring(lvlPrefix.length, str.length);
+		}
+		else
+		{
+			data.relativeTo = RelativeTo.PROJECT;
+			data.path = str;
 		}
 
-		data.relativeTo = relativeTo;
-		data.path = path;
-		data.index = index.parseInt();
+		data.relativeTo = RelativeTo.PROJECT;
+		data.path = str.substring(projPrefix.length, str.length);
 
 		return data;
 	}
 
 	public function equals(to:FilepathData)
 	{
-		return path == to.path && relativeTo == to.relativeTo && index == to.index;
+		return path == to.path && relativeTo == to.relativeTo;
 	}
 
-	public function switchRelative(roots:Array<String>)
+	public function switchRelative(newRelativeTo:RelativeTo)
 	{
-		var len = roots.length;
-		if (len == 0) {
-			this.index = 0;
-			this.relativeTo = '/';
-		}
-		else {
-			if (this.index >= len) {
-				this.index = 0;
-			}
-			else {
-				this.index = (this.index + 1) % len;
-			}
-			this.relativeTo = roots[this.index];
-		}
-
 		var base = getBase();
-		// relativeTo = newRelativeTo;
+		relativeTo = newRelativeTo;
 		var newBase = getBase();
 
 		if (!validPath(path))
@@ -129,22 +100,16 @@ class FilepathData
 
 	public function getBase():String
 	{
-		// switch (relativeTo)
-		// {
-		// 	case PROJECT:
-		// 		var path = getProjectDirectoryPath();
-		// 		if (validPath(path))
-		// 			return path;
-		// 	case LEVEL:
-		// 		var path = getLevelDirectoryPath();
-		// 		if (validPath(path))
-		// 			return path;
-		// }
-
-		// var path = Path.join([relativeTo, this.path]);
-		var path = relativeTo;
-		if (validPath(path)) {
-			return path;
+		switch (relativeTo)
+		{
+			case PROJECT:
+				var path = getProjectDirectoryPath();
+				if (validPath(path))
+					return path;
+			case LEVEL:
+				var path = getLevelDirectoryPath();
+				if (validPath(path))
+					return path;
 		}
 
 		return null;
@@ -155,8 +120,7 @@ class FilepathData
 		var base = getBase();
 		if (validPath(base))
 		{
-			// var full = Path.join([base, path]);
-			var full = path;
+			var full = Path.join([base, path]);
 			full = Path.normalize(full);
 			if (validPath(full))
 				return full;
