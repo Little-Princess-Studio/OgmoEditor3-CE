@@ -16,11 +16,10 @@ class FilepathValueTemplate extends ValueTemplate
 	public var defaults:FilepathData = new FilepathData();
 	public var extensions:Array<String> = [];
 	public var roots:Array<String> = [];
-	public var projectpath = FilepathData.getProjectDirectoryPath();
 
 	override function getHashCode():String
 	{
-		return name + ":fp:" + extensions.join(":") + roots.join(":") + ":" + projectpath;
+		return name + ":fp:" + extensions.join(":") + roots.join(":");
 	}
 
 	override function getDefault():String
@@ -56,7 +55,6 @@ class FilepathValueTemplate extends ValueTemplate
 		defaults = FilepathData.parseString(data.defaults);
 		roots = data.roots;
 		extensions = data.extensions;
-		projectpath = data.projectpath;
 	}
 
 	override function save():Dynamic
@@ -65,7 +63,6 @@ class FilepathValueTemplate extends ValueTemplate
 		data.defaults = defaults.asString();
 		data.extensions = extensions;
 		data.roots = roots;
-		data.projectpath = projectpath;
 		return data;
 	}
 }
